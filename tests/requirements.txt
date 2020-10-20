@@ -1,0 +1,4 @@
+PyLD
+pytest
+python-dateutil
+rdflib-jsonld

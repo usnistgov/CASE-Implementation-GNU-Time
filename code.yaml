@@ -34,6 +34,6 @@ themes:
   # - Energy
   # - Environment
   # - Fire
-  # - Forensic Science
+  - Forensic Science
   # - Health
-  # - Information technology
+  - Information technology

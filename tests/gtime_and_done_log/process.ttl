@@ -1,0 +1,18 @@
+@prefix kb: <http://example.org/kb/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix uco-core: <https://unifiedcyberontology.org/ontology/uco/core#> .
+@prefix uco-observable: <https://unifiedcyberontology.org/ontology/uco/observable#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+kb:process-1c2bf7dc-c55c-54cc-a26f-c9f73b6df0f9
+	a uco-observable:CyberItem ;
+	uco-core:facets [
+		a uco-observable:Process ;
+		uco-observable:createdTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
+		uco-observable:exitStatus "0"^^xsd:long ;
+		uco-observable:exitTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
+	] ;
+	.
+

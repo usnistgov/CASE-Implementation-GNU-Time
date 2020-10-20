@@ -1,0 +1,25 @@
+{
+    "@context": {
+        "kb": "http://example.org/kb/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "uco-core": "https://unifiedcyberontology.org/ontology/uco/core#",
+        "uco-observable": "https://unifiedcyberontology.org/ontology/uco/observable#"
+    },
+    "@id": "kb:custom-011a93fd-814b-537f-b111-ce4dceb373a6",
+    "@type": "uco-observable:CyberItem",
+    "uco-core:facets": {
+        "@type": "uco-observable:Process",
+        "uco-observable:createdTime": {
+            "@type": "xsd:dateTime",
+            "@value": "2020-10-14T14:07:39.267912-04:00"
+        },
+        "uco-observable:exitStatus": {
+            "@type": "xsd:long",
+            "@value": "0"
+        },
+        "uco-observable:exitTime": {
+            "@type": "xsd:dateTime",
+            "@value": "2020-10-14T14:07:39.267912-04:00"
+        }
+    }
+}

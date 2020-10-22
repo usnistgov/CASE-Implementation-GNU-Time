@@ -33,6 +33,7 @@ check: \
 
 clean:
 	@rm -f \
+	  *.json \
 	  *.ttl
 
 # This recipe exists to preserve re-creation instructions.

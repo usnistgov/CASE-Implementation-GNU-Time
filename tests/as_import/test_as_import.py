@@ -36,7 +36,14 @@ def _test_as_import_query(graph_filename, format):
         _logger.warning("There is a known issue with xsd data types not being recognized after the compacting process.")
         return 0
 
-    import rdflib.plugins.sparql
+    #TODO This try block can be removed, and the import put at the script's top, when rdflib Issue #1190 is resolved.
+    # https://github.com/RDFLib/rdflib/issues/1190
+    try:
+        import rdflib.plugins.sparql
+    except:
+        import pyparsing
+        _logger.debug("pyparsing.__version__ = %r." % pyparsing.__version__)
+        raise
 
     graph = _parse_graph(graph_filename, format)
 

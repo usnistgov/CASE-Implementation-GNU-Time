@@ -35,6 +35,9 @@ setup_kwargs = {
   ],
   "python_requires": ">=3.6",
   "install_requires": [
+    # TODO This constraint on pyparsing can be removed when rdflib Issue #1190 is resolved.
+    # https://github.com/RDFLib/rdflib/issues/1190
+    "pyparsing < 3.0.0",
     "python-dateutil",
     "rdflib",
     "requests"

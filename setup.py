@@ -19,7 +19,7 @@ with open("README.md", "r") as fh:
 
 setup_kwargs = {
   "name": "case_gnu_time",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "author": "Alex Nelson",
   "author_email": "alexander.nelson@nist.gov",
   "description": "A mapping of GNU Time to CASE",
@@ -35,6 +35,9 @@ setup_kwargs = {
   ],
   "python_requires": ">=3.6",
   "install_requires": [
+    # TODO This constraint on pyparsing can be removed when rdflib Issue #1190 is resolved.
+    # https://github.com/RDFLib/rdflib/issues/1190
+    "pyparsing < 3.0.0",
     "python-dateutil",
     "rdflib",
     "requests"

@@ -40,23 +40,78 @@ NS_XSD = rdflib.namespace.XSD
 
 class ProcessUCOObject(object):
     def __init__(self, graph, ns_base, **kwargs):
-        assert isinstance(graph, rdflib.Graph)
+        """
+        Initializing a ProcessUCOObject will create one triple in the graph.  To add data to the new node, call populate_from_gnu_time_log().
+        """
 
-        prefix_slug = kwargs.get("prefix_slug", "process-")
+        assert isinstance(graph, rdflib.Graph)
 
         self.graph = graph
 
+        prefix_slug = kwargs.get("prefix_slug", "process-")
+
+        # Guarantee at least one triple enters the graph.
         self._node = rdflib.URIRef(ns_base[prefix_slug + local_uuid.local_uuid()])
         self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.CyberItem))
+
         self._bnode_process = None
         self._created_time = None
         self._exit_status = None
         self._exit_time = None
 
+    def populate_from_gnu_time_log(self, gnu_time_log):
+        """
+        This method populates Process data from a GNU Time log file.  If self.exit_time is not set before this method is called, it will be set by reading the modification time of gnu_time_log.
+        """
+        # First, guarantee exit time.
+        if self.exit_time is None:
+            st_time_log = os.stat(gnu_time_log)
+            # Reminders on fromtimestamp vs. utcfromtimestamp:
+            #   https://docs.python.org/3/library/datetime.html#datetime.datetime.utcfromtimestamp
+            #   "To get an aware datetime object, call fromtimestamp()"
+            exit_time_datetime = datetime.datetime.fromtimestamp(st_time_log.st_mtime, tz=datetime.timezone.utc)
+            exit_time_str = exit_time_datetime.isoformat()
+            self.exit_time = exit_time_str
+        else:
+            exit_time_datetime = dateutil.parser.isoparse(self.exit_time)
+
+        kvdict = dict()
+        with open(gnu_time_log, "r") as fh:
+            for line in fh:
+                cleaned_line = line.strip()
+                line_parts = cleaned_line.split(": ")
+                key = line_parts[0]
+                value = ": ".join(line_parts[1:])
+                kvdict[key] = value
+
+        self.exit_status = int(kvdict["Exit status"])
+
+        elapsed_str = kvdict["Elapsed (wall clock) time (h:mm:ss or m:ss)"]
+        elapsed_str_parts = elapsed_str.split(":")
+        elapsed_seconds_str = elapsed_str_parts[-1]
+        elapsed_seconds = int(elapsed_str_parts[-1].split(".")[0])
+        elapsed_microseconds = int(elapsed_str_parts[-1].split(".")[1]) * 10000
+        elapsed_minutes = int(elapsed_str_parts[-2])
+        if len(elapsed_str_parts) == 3:
+            elapsed_minutes += (60 * int(elapsed_str_parts[-3]))
+
+        delta = dateutil.relativedelta.relativedelta(
+          minutes=elapsed_minutes,
+          seconds=elapsed_seconds,
+          microseconds=elapsed_microseconds
+        )
+
+        #logging.debug("delta = %r." % delta)
+        created_time_datetime = exit_time_datetime - delta
+        #logging.debug("created_time_datetime = %r." % created_time_datetime)
+        #logging.debug("exit_time_datetime = %r." % exit_time_datetime)
+
+        self.created_time = created_time_datetime.isoformat()
+
     @property
     def bnode_process(self):
         """
-        Create on first access.
+        Created on first access.
         """
         if self._bnode_process is None:
             self._bnode_process = rdflib.BNode()
@@ -137,50 +192,11 @@ def build_process_object(graph, ns_base, gnu_time_log, mtime=None, prefix_slug=N
         process_object_kwargs["prefix_slug"] = prefix_slug
     process_object = ProcessUCOObject(graph, ns_base, **process_object_kwargs)
 
-    exit_time_datetime = None
-    if mtime is None:
-        st_time_log = os.stat(gnu_time_log)
-        # Reminders on fromtimestamp vs. utcfromtimestamp:
-        #   https://docs.python.org/3/library/datetime.html#datetime.datetime.utcfromtimestamp
-        #   "To get an aware datetime object, call fromtimestamp()"
-        exit_time_datetime = datetime.datetime.fromtimestamp(st_time_log.st_mtime, tz=datetime.timezone.utc)
-        exit_time_str = exit_time_datetime.isoformat()
-        process_object.exit_time = exit_time_str
-    else:
-        exit_time_datetime = dateutil.parser.isoparse(mtime)
+    if not mtime is None:
         process_object.exit_time = mtime
 
-    kvdict = dict()
-    with open(gnu_time_log, "r") as fh:
-        for line in fh:
-            cleaned_line = line.strip()
-            line_parts = cleaned_line.split(": ")
-            key = line_parts[0]
-            value = ": ".join(line_parts[1:])
-            kvdict[key] = value
-    process_object.exit_status = int(kvdict["Exit status"])
+    process_object.populate_from_gnu_time_log(gnu_time_log)
 
-    elapsed_str = kvdict["Elapsed (wall clock) time (h:mm:ss or m:ss)"]
-    elapsed_str_parts = elapsed_str.split(":")
-    elapsed_seconds_str = elapsed_str_parts[-1]
-    elapsed_seconds = int(elapsed_str_parts[-1].split(".")[0])
-    elapsed_microseconds = int(elapsed_str_parts[-1].split(".")[1]) * 10000
-    elapsed_minutes = int(elapsed_str_parts[-2])
-    if len(elapsed_str_parts) == 3:
-        elapsed_minutes += (60 * int(elapsed_str_parts[-3]))
-
-    delta = dateutil.relativedelta.relativedelta(
-      minutes=elapsed_minutes,
-      seconds=elapsed_seconds,
-      microseconds=elapsed_microseconds
-    )
-
-    #logging.debug("delta = %r." % delta)
-    created_time_datetime = exit_time_datetime - delta
-    #logging.debug("created_time_datetime = %r." % created_time_datetime)
-    #logging.debug("exit_time_datetime = %r." % exit_time_datetime)
-
-    process_object.created_time = created_time_datetime.isoformat()
     return process_object
 
 argument_parser = argparse.ArgumentParser(epilog=__doc__)

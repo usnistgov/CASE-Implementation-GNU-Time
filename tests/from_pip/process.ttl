@@ -6,7 +6,7 @@
 @prefix uco-observable: <https://unifiedcyberontology.org/ontology/uco/observable#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-kb:process-e7498b28-74d7-5952-a0e3-2f9e924bd662
+kb:process-dfdabed0-01ab-5e8a-b65a-206d7db4b28b
 	a uco-observable:CyberItem ;
 	uco-core:facets [
 		a uco-observable:Process ;

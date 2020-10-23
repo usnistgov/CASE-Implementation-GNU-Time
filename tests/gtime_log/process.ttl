@@ -10,9 +10,9 @@ kb:process-ab7c4ab6-07de-54f6-a282-7d1936daec32
 	a uco-observable:CyberItem ;
 	uco-core:facets [
 		a uco-observable:Process ;
-		uco-observable:createdTime "2020-10-20T15:47:19.925903+00:00"^^xsd:dateTime ;
+		uco-observable:createdTime "2020-10-23T15:45:49.857722+00:00"^^xsd:dateTime ;
 		uco-observable:exitStatus "0"^^xsd:long ;
-		uco-observable:exitTime "2020-10-20T15:47:19.925903+00:00"^^xsd:dateTime ;
+		uco-observable:exitTime "2020-10-23T15:45:49.857722+00:00"^^xsd:dateTime ;
 	] ;
 	.
 

@@ -5,7 +5,7 @@
         "uco-core": "https://unifiedcyberontology.org/ontology/uco/core#",
         "uco-observable": "https://unifiedcyberontology.org/ontology/uco/observable#"
     },
-    "@id": "kb:process-e7498b28-74d7-5952-a0e3-2f9e924bd662",
+    "@id": "kb:process-dfdabed0-01ab-5e8a-b65a-206d7db4b28b",
     "@type": "uco-observable:CyberItem",
     "uco-core:facets": {
         "@type": "uco-observable:Process",

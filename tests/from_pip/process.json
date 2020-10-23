@@ -3,7 +3,8 @@
         "kb": "http://example.org/kb/",
         "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
         "uco-core": "https://unifiedcyberontology.org/ontology/uco/core#",
-        "uco-observable": "https://unifiedcyberontology.org/ontology/uco/observable#"
+        "uco-observable": "https://unifiedcyberontology.org/ontology/uco/observable#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
     "@id": "kb:process-dfdabed0-01ab-5e8a-b65a-206d7db4b28b",
     "@type": "uco-observable:CyberItem",

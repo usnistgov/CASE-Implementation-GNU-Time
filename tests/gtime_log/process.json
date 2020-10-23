@@ -11,7 +11,7 @@
         "@type": "uco-observable:Process",
         "uco-observable:createdTime": {
             "@type": "xsd:dateTime",
-            "@value": "2020-10-20T15:47:19.925903+00:00"
+            "@value": "2020-10-23T15:45:49.857722+00:00"
         },
         "uco-observable:exitStatus": {
             "@type": "xsd:long",
@@ -19,7 +19,7 @@
         },
         "uco-observable:exitTime": {
             "@type": "xsd:dateTime",
-            "@value": "2020-10-20T15:47:19.925903+00:00"
+            "@value": "2020-10-23T15:45:49.857722+00:00"
         }
     }
 }

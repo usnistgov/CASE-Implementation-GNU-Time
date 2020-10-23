@@ -19,7 +19,7 @@ with open("README.md", "r") as fh:
 
 setup_kwargs = {
   "name": "case_gnu_time",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "author": "Alex Nelson",
   "author_email": "alexander.nelson@nist.gov",
   "description": "A mapping of GNU Time to CASE",

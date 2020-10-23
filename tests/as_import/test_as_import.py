@@ -31,11 +31,6 @@ def _test_as_import_load(graph_filename, format):
     assert len(graph) > 0
 
 def _test_as_import_query(graph_filename, format):
-    #TODO
-    if format == "json-ld":
-        _logger.warning("There is a known issue with xsd data types not being recognized after the compacting process.")
-        return 0
-
     #TODO This try block can be removed, and the import put at the script's top, when rdflib Issue #1190 is resolved.
     # https://github.com/RDFLib/rdflib/issues/1190
     try:

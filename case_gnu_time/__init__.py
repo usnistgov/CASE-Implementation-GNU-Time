@@ -191,7 +191,7 @@ argument_parser.add_argument("--output-format", help="RDF syntax to use for out_
 argument_parser.add_argument("gnu_time_log", help="A file recording the output of the process wrapper GNU time, with the --verbose flag (recorded with the --output flag).  Used to retrieve exit status, conclusion time (if --done-log not provided), and run length.")
 argument_parser.add_argument("out_graph", help="A self-contained RDF graph file, in the format requested by --output-format.")
 
-def guess_output_format(filename):
+def guess_graph_format(filename):
     ext = os.path.splitext(filename)[-1].replace(".", "")
     if ext in ("json", "json-ld", "jsonld"):
         return "json-ld"
@@ -216,7 +216,7 @@ def main():
     process_object = build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str)
 
     #_logger.debug("args.output_format = %r." % args.output_format)
-    output_format = args.output_format or guess_output_format(args.out_graph)
+    output_format = args.output_format or guess_graph_format(args.out_graph)
 
     graph.serialize(destination=args.out_graph, format=output_format)
 

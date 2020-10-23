@@ -40,7 +40,7 @@ def main():
             mtime_str = mtime_fh.read(64).strip()
     process_object = case_gnu_time.build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str, "custom-")
 
-    output_format = args.output_format or case_gnu_time.guess_output_format(args.out_graph)
+    output_format = args.output_format or case_gnu_time.guess_graph_format(args.out_graph)
 
     graph.serialize(destination=args.out_graph, format=output_format)
 

@@ -70,6 +70,15 @@ Some `make` targets are defined for this repository:
 * `download` - Download files sufficiently to run the unit tests offline.  This will *not* include the ontology repositories tracked as submodules.  Note if you do need to work offline, be aware touching the `setup.py` file in the root, or `tests/requirements.txt`, will trigger a virtual environment rebuild.
 
 
+### Operating system environments
+
+This repository is tested in several POSIX environments.  See the [dependencies/](dependencies/) directory for package-installation and -configuration scripts for some of the test environments.
+
+Note that even though FreeBSD is listed among the test environments, GNU Time is not available as a package.  Without locally compiling and installing GNU Time, some base test data cannot be re-built in FreeBSD.  This is currently not attempted, and is one reason some base test files are hard-coded in the repository.  (Another reason is saving on unimportant differences in test re-runs.)
+
+Also note that running tests in FreeBSD requires running `gmake`, not `make`.
+
+
 ## Disambiguation
 
 Several independent implementations of some `time` command exist.

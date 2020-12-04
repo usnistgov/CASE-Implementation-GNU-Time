@@ -15,6 +15,8 @@
 This library parses the output of GNU Time into a UCO Process graph node.
 """
 
+__version__ = "0.3.0"
+
 import argparse
 import datetime
 import logging

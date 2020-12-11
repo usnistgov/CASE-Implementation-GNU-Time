@@ -31,7 +31,7 @@ help(case_gnu_time.build_process_object)
 
 ## Development status
 
-This repository follows [CASE community guidance on describing development status](https://caseontology.org/resources/github_repos.html#development-statuses), by adherence to noted support requirements.
+This repository follows [CASE community guidance on describing development status](https://caseontology.org/resources/github_policies.html#development-statuses), by adherence to noted support requirements.
 
 The status of this repository is:
 

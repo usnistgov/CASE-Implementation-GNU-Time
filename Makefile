@@ -13,6 +13,7 @@
 
 SHELL := /bin/bash
 
+# This recipe intentionally blank.
 all:
 
 .PHONY: \
@@ -29,7 +30,7 @@ all:
 	touch $@
 
 check: \
-  dependencies/CASE-Examples-QC/.lib.done.log
+  dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt
 	$(MAKE) \
 	  --directory tests \
 	  check
@@ -43,11 +44,18 @@ clean:
 	  --directory tests \
 	  clean
 
-dependencies/CASE-Examples-QC/.lib.done.log: \
+dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt: \
   .git_submodule_init.done.log
 	$(MAKE) \
+	  PYTHON3=$(PYTHON3) \
 	  --directory dependencies/CASE-Examples-QC \
-	  .lib.done.log
+	  .git_submodule_init.done.log \
+	  .lib.done.log \
+	  .venv.done.log
+	$(MAKE) \
+	  PYTHON3=$(PYTHON3) \
+	  --directory dependencies/CASE-Examples-QC/tests \
+	  ontology_vocabulary.txt
 	test -r $@
 
 distclean: \
@@ -61,7 +69,7 @@ distclean: \
 	  distclean
 
 download: \
-  dependencies/CASE-Examples-QC/.lib.done.log
+  dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt
 	$(MAKE) \
 	  --directory tests \
 	  download

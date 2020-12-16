@@ -13,6 +13,8 @@
 
 SHELL := /bin/bash
 
+PYTHON3 ?= $(shell which python3.8 2>/dev/null || which python3.7 2>/dev/null || which python3.6 2>/dev/null || which python3)
+
 # This recipe intentionally blank.
 all:
 
@@ -32,6 +34,7 @@ all:
 check: \
   dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt
 	$(MAKE) \
+	  PYTHON3=$(PYTHON3) \
 	  --directory tests \
 	  check
 
@@ -46,6 +49,8 @@ clean:
 
 dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt: \
   .git_submodule_init.done.log
+	test ! -z "$(PYTHON3)" \
+	  || (echo "ERROR:Makefile:PYTHON3 not defined" >&2 ; exit 1)
 	$(MAKE) \
 	  PYTHON3=$(PYTHON3) \
 	  --directory dependencies/CASE-Examples-QC \
@@ -70,6 +75,9 @@ distclean: \
 
 download: \
   dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt
+	test ! -z "$(PYTHON3)" \
+	  || (echo "ERROR:Makefile:PYTHON3 not defined" >&2 ; exit 1)
 	$(MAKE) \
+	  PYTHON3=$(PYTHON3) \
 	  --directory tests \
 	  download

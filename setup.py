@@ -19,7 +19,7 @@ with open("README.md", "r") as fh:
 
 setup_kwargs = {
   "name": "case_gnu_time",
-  "version": "0.3.0",
+  "version": "attr: case_gnu_time.__version__",
   "author": "Alex Nelson",
   "author_email": "alexander.nelson@nist.gov",
   "description": "A mapping of GNU Time to CASE",
@@ -28,7 +28,7 @@ setup_kwargs = {
   "url": "https://github.com/casework/CASE-Implementation-GNU-Time",
   "packages": setuptools.find_packages(),
   "classifiers": [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "License :: Public Domain",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3"

@@ -13,7 +13,9 @@
 
 SHELL := /bin/bash
 
-top_srcdir := ../..
+top_srcdir := $(shell cd ../.. ; pwd)
+
+qc_srcdir := $(top_srcdir)/dependencies/CASE-Examples-QC
 
 tests_srcdir := $(top_srcdir)/tests
 
@@ -23,13 +25,25 @@ GDATE ?= $(shell which gdate || which date)
 # Use GNU time.
 GTIME ?= $(shell which gtime || which time)
 
+COMM ?= $(shell which gcomm 2>/dev/null || which comm)
+ifeq ($(COMM),)
+$(error comm not found)
+endif
+
+SORT ?= $(shell which gsort 2>/dev/null || which sort)
+ifeq ($(SORT),)
+$(error sort not found)
+endif
+
 RDF_TOOLKIT_JAR := $(top_srcdir)/dependencies/CASE-Examples-QC/lib/rdf-toolkit.jar
 
 all: \
-  process.json
+  undefined_vocabulary.txt
 
 check: \
-  process.json
+  undefined_vocabulary.txt
+	@test ! -s undefined_vocabulary.txt \
+	  || (echo "ERROR:tests/gtime_and_done_log/Makefile:The output in process.json has undefined CASE or UCO terms.  The first few are:" >&2 && head undefined_vocabulary.txt >&2 && exit 1)
 
 clean:
 	@rm -f \
@@ -100,3 +114,25 @@ process.ttl: \
 	  --target-format turtle
 	rm __$@
 	mv _$@ $@
+
+undefined_vocabulary.txt: \
+  process.json \
+  $(qc_srcdir)/src/vocabulary_used.py \
+  $(qc_srcdir)/tests/ontology_vocabulary.txt
+	source $(qc_srcdir)/venv/bin/activate \
+	  && python3 $(qc_srcdir)/src/vocabulary_used.py \
+	    $< \
+	    > $@___
+	grep ':' $@___ \
+	  | egrep -v 'w3.org' \
+	    | grep -v '/kb/' \
+	      > $@__
+	rm $@___
+	LC_ALL=C \
+	  $(COMM) \
+	    -13 \
+	    $(qc_srcdir)/tests/ontology_vocabulary.txt \
+	    <(LC_ALL=C $(SORT) $@__) \
+	    > $@_
+	rm $@__
+	mv $@_ $@

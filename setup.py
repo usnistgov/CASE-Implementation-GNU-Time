@@ -28,7 +28,7 @@ setup_kwargs = {
   "url": "https://github.com/casework/CASE-Implementation-GNU-Time",
   "packages": setuptools.find_packages(),
   "classifiers": [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "License :: Public Domain",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3"

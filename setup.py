@@ -13,41 +13,5 @@
 
 import setuptools
 
-#TODO - PyPI will need a differently-written README.
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
-setup_kwargs = {
-  "name": "case_gnu_time",
-  "version": "attr: case_gnu_time.__version__",
-  "author": "Alex Nelson",
-  "author_email": "alexander.nelson@nist.gov",
-  "description": "A mapping of GNU Time to CASE",
-  "long_description": long_description,
-  "long_description_content_type": "text/markdown",
-  "url": "https://github.com/casework/CASE-Implementation-GNU-Time",
-  "packages": setuptools.find_packages(),
-  "classifiers": [
-    "Development Status :: 4 - Beta",
-    "License :: Public Domain",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3"
-  ],
-  "python_requires": ">=3.6",
-  "install_requires": [
-    # TODO This constraint on pyparsing can be removed when rdflib Issue #1190 is resolved.
-    # https://github.com/RDFLib/rdflib/issues/1190
-    "pyparsing < 3.0.0",
-    "python-dateutil",
-    "rdflib",
-    "requests"
-  ],
-  "entry_points": {
-    "console_scripts": [
-      "case_gnu_time=case_gnu_time:main"
-    ]
-  }
-}
-
 if __name__ == "__main__":
-    setuptools.setup(**setup_kwargs)
+    setuptools.setup()

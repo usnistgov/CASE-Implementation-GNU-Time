@@ -37,6 +37,7 @@ all: \
   $(top_srcdir)/.git_submodule_init.done.log \
   $(top_srcdir)/case_gnu_time/__init__.py \
   $(top_srcdir)/case_gnu_time/local_uuid.py \
+  $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv
@@ -57,6 +58,7 @@ all: \
 
 .venv_minimal.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
+  $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv_minimal

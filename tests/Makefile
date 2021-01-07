@@ -47,7 +47,8 @@ all: \
 	source venv/bin/activate ; \
 	  pip install \
 	    --upgrade \
-	    pip
+	    pip \
+	    setuptools
 	source venv/bin/activate ; \
 	  cd $(top_srcdir) ; \
 	    python3 setup.py install
@@ -68,7 +69,8 @@ all: \
 	source venv_minimal/bin/activate ; \
 	  pip install \
 	    --upgrade \
-	    pip
+	    pip \
+	    setuptools
 	source venv_minimal/bin/activate ; \
 	  pip install \
 	    -r requirements.txt

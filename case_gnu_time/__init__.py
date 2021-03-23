@@ -15,7 +15,7 @@
 This library parses the output of GNU Time into a UCO Process graph node.
 """
 
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 
 import argparse
 import datetime
@@ -54,7 +54,7 @@ class ProcessUCOObject(object):
 
         # Guarantee at least one triple enters the graph.
         self._node = rdflib.URIRef(ns_base[prefix_slug + local_uuid.local_uuid()])
-        self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.CyberItem))
+        self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.ObservableObject))
 
         self._bnode_process = None
         self._created_time = None
@@ -117,8 +117,8 @@ class ProcessUCOObject(object):
         """
         if self._bnode_process is None:
             self._bnode_process = rdflib.BNode()
-            self.graph.add((self._bnode_process, NS_RDF.type, NS_UCO_OBSERVABLE.Process))
-            self.graph.add((self.node, NS_UCO_CORE.facets, self._bnode_process))
+            self.graph.add((self._bnode_process, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet))
+            self.graph.add((self.node, NS_UCO_CORE.hasFacet, self._bnode_process))
         return self._bnode_process
 
     @property

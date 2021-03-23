@@ -31,6 +31,10 @@ all: \
   all-from_pip \
   all-gtime_log \
   all-gtime_and_done_log \
+  check-as_import \
+  check-from_pip \
+  check-gtime_log \
+  check-gtime_and_done_log \
   download
 
 .venv.done.log: \
@@ -44,16 +48,16 @@ all: \
 	$(PYTHON3) -m virtualenv \
 	  --python=$(PYTHON3) \
 	  venv
-	source venv/bin/activate ; \
-	  pip install \
+	source venv/bin/activate \
+	  && pip install \
 	    --upgrade \
 	    pip \
 	    setuptools
-	source venv/bin/activate ; \
-	  cd $(top_srcdir) ; \
-	    python3 setup.py install
-	source venv/bin/activate ; \
-	  pip install \
+	source venv/bin/activate \
+	  && cd $(top_srcdir) \
+	    && python3 setup.py install
+	source venv/bin/activate \
+	  && pip install \
 	    -r requirements.txt
 	touch $@
 
@@ -66,13 +70,13 @@ all: \
 	$(PYTHON3) -m virtualenv \
 	  --python=$(PYTHON3) \
 	  venv_minimal
-	source venv_minimal/bin/activate ; \
-	  pip install \
+	source venv_minimal/bin/activate \
+	  && pip install \
 	    --upgrade \
 	    pip \
 	    setuptools
-	source venv_minimal/bin/activate ; \
-	  pip install \
+	source venv_minimal/bin/activate \
+	  && pip install \
 	    -r requirements.txt
 	touch $@
 
@@ -101,15 +105,35 @@ all-gtime_and_done_log: \
 	  --directory gtime_and_done_log
 
 # Dependencies are listed here in desired execution-progression order.
-# Each subdirectory may have a 'make check' to call pytest locally, so 'make check' here does not recursively call 'make check' in the directories below.  This is why there are 'all-' recursion targets.
 check: \
-  all-gtime_log \
-  all-gtime_and_done_log \
-  all-from_pip \
+  check-gtime_log \
+  check-gtime_and_done_log \
+  check-from_pip \
+  check-as_import
+
+check-as_import: \
   all-as_import
-	source $(srcdir)/venv/bin/activate ; \
-	  pytest \
-	    --log-level=DEBUG
+	$(MAKE) \
+	  --directory as_import \
+	  check
+
+check-from_pip: \
+  all-from_pip
+	$(MAKE) \
+	  --directory from_pip \
+	  check
+
+check-gtime_log: \
+  all-gtime_log
+	$(MAKE) \
+	  --directory gtime_log \
+	  check
+
+check-gtime_and_done_log: \
+  all-gtime_and_done_log
+	$(MAKE) \
+	  --directory gtime_and_done_log \
+	  check
 
 clean:
 	@$(MAKE) \

@@ -17,6 +17,8 @@ top_srcdir := $(shell cd ../.. ; pwd)
 
 qc_srcdir := $(top_srcdir)/dependencies/CASE-Examples-QC
 
+case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE
+
 tests_srcdir := $(top_srcdir)/tests
 
 # Use GNU date.
@@ -35,7 +37,7 @@ ifeq ($(SORT),)
 $(error sort not found)
 endif
 
-RDF_TOOLKIT_JAR := $(top_srcdir)/dependencies/CASE-Examples-QC/lib/rdf-toolkit.jar
+RDF_TOOLKIT_JAR := $(case_srcdir)/lib/rdf-toolkit.jar
 
 all: \
   undefined_vocabulary.txt
@@ -86,8 +88,8 @@ process.json: \
 	  --source-format turtle \
 	  --target __$@ \
 	  --target-format json-ld
-	source $(tests_srcdir)/venv/bin/activate ; \
-	  python $(tests_srcdir)/src/compact.py \
+	source $(tests_srcdir)/venv/bin/activate \
+	  && python $(tests_srcdir)/src/compact.py \
 	    __$@ \
 	    _$@
 	rm __$@
@@ -98,9 +100,9 @@ process.ttl: \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@
-	source $(tests_srcdir)/venv/bin/activate ; \
-	  DEMO_UUID_REQUESTING_NONRANDOM=NONRANDOM_REQUESTED \
-	    case_gnu_time \
+	export DEMO_UUID_REQUESTING_NONRANDOM=NONRANDOM_REQUESTED \
+	  && source $(tests_srcdir)/venv/bin/activate \
+	    && case_gnu_time \
 	      --done-log echo.txt.done.log \
 	      echo.txt.time.log \
 	      __$@

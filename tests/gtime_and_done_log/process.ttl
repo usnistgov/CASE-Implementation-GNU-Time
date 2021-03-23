@@ -7,9 +7,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 kb:process-0217fca4-0ab4-545e-839a-cf2d95d611c2
-	a uco-observable:CyberItem ;
-	uco-core:facets [
-		a uco-observable:Process ;
+	a uco-observable:ObservableObject ;
+	uco-core:hasFacet [
+		a uco-observable:ProcessFacet ;
 		uco-observable:createdTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
 		uco-observable:exitStatus "0"^^xsd:long ;
 		uco-observable:exitTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;

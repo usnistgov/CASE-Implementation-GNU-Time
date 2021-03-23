@@ -50,12 +50,12 @@ SELECT ?nProcessObject
 WHERE
 {
   ?nProcessObject
-    a uco-observable:CyberItem ;
-    uco-core:facets ?nProcessFacet ;
+    a uco-observable:ObservableObject ;
+    uco-core:hasFacet ?nProcessFacet ;
     .
 
   ?nProcessFacet
-    a uco-observable:Process ;
+    a uco-observable:ProcessFacet ;
     uco-observable:exitStatus "0"^^xsd:long ;
     .
 }

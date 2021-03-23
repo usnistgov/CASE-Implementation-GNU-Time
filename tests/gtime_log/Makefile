@@ -17,6 +17,8 @@ top_srcdir := $(shell cd ../.. ; pwd)
 
 qc_srcdir := $(top_srcdir)/dependencies/CASE-Examples-QC
 
+case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE
+
 tests_srcdir := $(top_srcdir)/tests
 
 # Use GNU time.
@@ -32,7 +34,7 @@ ifeq ($(SORT),)
 $(error sort not found)
 endif
 
-RDF_TOOLKIT_JAR := $(qc_srcdir)/lib/rdf-toolkit.jar
+RDF_TOOLKIT_JAR := $(case_srcdir)/lib/rdf-toolkit.jar
 
 all: \
   undefined_vocabulary.txt

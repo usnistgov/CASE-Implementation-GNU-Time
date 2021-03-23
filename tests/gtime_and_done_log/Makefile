@@ -35,7 +35,7 @@ ifeq ($(SORT),)
 $(error sort not found)
 endif
 
-RDF_TOOLKIT_JAR := $(top_srcdir)/dependencies/CASE-Examples-QC/lib/rdf-toolkit.jar
+RDF_TOOLKIT_JAR := $(qc_srcdir)/lib/rdf-toolkit.jar
 
 all: \
   undefined_vocabulary.txt

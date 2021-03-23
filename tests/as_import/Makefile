@@ -45,7 +45,8 @@ check: \
 	@test ! -s undefined_vocabulary.txt \
 	  || (echo "ERROR:tests/as_import/Makefile:The output in process.json has undefined CASE or UCO terms.  The first few are:" >&2 && head undefined_vocabulary.txt >&2 && exit 1)
 	source $(tests_srcdir)/venv/bin/activate \
-	  && pytest
+	  && pytest \
+	    --log-level=DEBUG
 
 clean:
 	@rm -f \

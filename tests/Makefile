@@ -44,16 +44,16 @@ all: \
 	$(PYTHON3) -m virtualenv \
 	  --python=$(PYTHON3) \
 	  venv
-	source venv/bin/activate ; \
-	  pip install \
+	source venv/bin/activate \
+	  && pip install \
 	    --upgrade \
 	    pip \
 	    setuptools
-	source venv/bin/activate ; \
-	  cd $(top_srcdir) ; \
-	    python3 setup.py install
-	source venv/bin/activate ; \
-	  pip install \
+	source venv/bin/activate \
+	  && cd $(top_srcdir) \
+	    && python3 setup.py install
+	source venv/bin/activate \
+	  && pip install \
 	    -r requirements.txt
 	touch $@
 
@@ -66,13 +66,13 @@ all: \
 	$(PYTHON3) -m virtualenv \
 	  --python=$(PYTHON3) \
 	  venv_minimal
-	source venv_minimal/bin/activate ; \
-	  pip install \
+	source venv_minimal/bin/activate \
+	  && pip install \
 	    --upgrade \
 	    pip \
 	    setuptools
-	source venv_minimal/bin/activate ; \
-	  pip install \
+	source venv_minimal/bin/activate \
+	  && pip install \
 	    -r requirements.txt
 	touch $@
 
@@ -107,8 +107,8 @@ check: \
   all-gtime_and_done_log \
   all-from_pip \
   all-as_import
-	source $(srcdir)/venv/bin/activate ; \
-	  pytest \
+	source $(srcdir)/venv/bin/activate \
+	  && pytest \
 	    --log-level=DEBUG
 
 clean:

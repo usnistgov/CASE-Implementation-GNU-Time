@@ -86,8 +86,8 @@ process.json: \
 	  --source-format turtle \
 	  --target __$@ \
 	  --target-format json-ld
-	source $(tests_srcdir)/venv_minimal/bin/activate ; \
-	  python $(tests_srcdir)/src/compact.py \
+	source $(tests_srcdir)/venv_minimal/bin/activate \
+	  && python $(tests_srcdir)/src/compact.py \
 	    __$@ \
 	    _$@
 	rm __$@
@@ -99,9 +99,9 @@ process.ttl: \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@
-	source $(tests_srcdir)/venv_minimal/bin/activate ; \
-	  DEMO_UUID_REQUESTING_NONRANDOM=NONRANDOM_REQUESTED \
-	    python $(top_srcdir)/case_gnu_time/__init__.py \
+	export DEMO_UUID_REQUESTING_NONRANDOM=NONRANDOM_REQUESTED \
+	  && source $(tests_srcdir)/venv_minimal/bin/activate \
+	    && python $(top_srcdir)/case_gnu_time/__init__.py \
 	      --done-log echo.txt.done.log \
 	      echo.txt.time.log \
 	      __$@

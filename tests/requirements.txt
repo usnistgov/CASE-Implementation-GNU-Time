@@ -1,5 +1,2 @@
 case_utils
-PyLD
-pytest
 python-dateutil
-rdflib-jsonld

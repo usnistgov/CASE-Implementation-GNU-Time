@@ -71,6 +71,7 @@ all: \
 
 .venv_minimal.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
+  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \
   requirements.txt
@@ -83,6 +84,13 @@ all: \
 	    --upgrade \
 	    pip \
 	    setuptools
+	source venv_minimal/bin/activate \
+	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
+	    && pip install \
+	      .
+	source venv_minimal/bin/activate \
+	  && pip install \
+	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
 	source venv_minimal/bin/activate \
 	  && pip install \
 	    -r requirements.txt

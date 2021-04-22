@@ -86,7 +86,6 @@ process.json: \
 
 process.ttl: \
   $(top_srcdir)/case_gnu_time/__init__.py \
-  $(top_srcdir)/case_gnu_time/local_uuid.py \
   echo.txt.time.log
 	rm -f _$@ __$@
 	export DEMO_UUID_REQUESTING_NONRANDOM=NONRANDOM_REQUESTED \

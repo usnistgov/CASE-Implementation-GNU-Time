@@ -1,4 +1,2 @@
-PyLD
-pytest
+case_utils
 python-dateutil
-rdflib-jsonld

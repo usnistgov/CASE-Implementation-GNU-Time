@@ -28,13 +28,6 @@ import rdflib
 
 import case_utils
 
-try:
-    from case_gnu_time import local_uuid
-except ImportError:
-    if __name__ != "__main__":
-        raise
-    import local_uuid
-
 _logger = logging.getLogger(os.path.basename(__file__))
 
 NS_RDF = rdflib.RDF
@@ -55,7 +48,7 @@ class ProcessUCOObject(object):
         prefix_slug = kwargs.get("prefix_slug", "process-")
 
         # Guarantee at least one triple enters the graph.
-        self._node = rdflib.URIRef(ns_base[prefix_slug + local_uuid.local_uuid()])
+        self._node = rdflib.URIRef(ns_base[prefix_slug + case_utils.local_uuid.local_uuid()])
         self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.ObservableObject))
 
         self._bnode_process = None
@@ -189,7 +182,7 @@ def build_process_object(graph, ns_base, gnu_time_log, mtime=None, prefix_slug=N
 
     The optional argument prefix_slug is a short prefix to add to the node's in-namespace identifier, ending with "-".  If absent, the ProcessUCOObject will supply a default of "process-".
     """
-    local_uuid.configure()
+    case_utils.local_uuid.configure()
 
     process_object_kwargs = dict()
     if not prefix_slug is None:

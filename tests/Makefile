@@ -40,7 +40,6 @@ all: \
 .venv.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
   $(top_srcdir)/case_gnu_time/__init__.py \
-  $(top_srcdir)/case_gnu_time/local_uuid.py \
   $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \

@@ -97,7 +97,6 @@ process.json: \
 
 process.ttl: \
   $(top_srcdir)/case_gnu_time/__init__.py \
-  $(top_srcdir)/case_gnu_time/local_uuid.py \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@

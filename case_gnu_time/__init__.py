@@ -26,6 +26,8 @@ import dateutil
 import dateutil.parser
 import rdflib
 
+import case_utils
+
 try:
     from case_gnu_time import local_uuid
 except ImportError:
@@ -205,17 +207,9 @@ argument_parser = argparse.ArgumentParser(epilog=__doc__)
 argument_parser.add_argument("--base-prefix", default="http://example.org/kb/")
 argument_parser.add_argument("--debug", action="store_true")
 argument_parser.add_argument("--done-log", help="A file recording the completion time of the process that GNU Time was timing, as an ISO-8601 string.  If this argument is not provided, the Stat mtime of gnu_time_log is used.")
-argument_parser.add_argument("--output-format", help="RDF syntax to use for out_graph.  Passed to rdflib.Graph.serialize(format=).  The format will be guessed based on the output file extension, but will default to Turtle.")
+argument_parser.add_argument("--output-format", help="Override extension-based format guesser.")
 argument_parser.add_argument("gnu_time_log", help="A file recording the output of the process wrapper GNU time, with the --verbose flag (recorded with the --output flag).  Used to retrieve exit status, conclusion time (if --done-log not provided), and run length.")
-argument_parser.add_argument("out_graph", help="A self-contained RDF graph file, in the format requested by --output-format.")
-
-def guess_graph_format(filename):
-    ext = os.path.splitext(filename)[-1].replace(".", "")
-    if ext in ("json", "json-ld", "jsonld"):
-        return "json-ld"
-    elif ext in ("ttl", "turtle"):
-        return "turtle"
-    return "turtle"
+argument_parser.add_argument("out_graph", help="A self-contained RDF graph file, in the format either requested by --output-format or guessed based on extension.")
 
 def main():
     args = argument_parser.parse_args()
@@ -234,7 +228,7 @@ def main():
     process_object = build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str)
 
     #_logger.debug("args.output_format = %r." % args.output_format)
-    output_format = args.output_format or guess_graph_format(args.out_graph)
+    output_format = args.output_format or case_utils.guess_format(args.out_graph)
 
     graph.serialize(destination=args.out_graph, format=output_format)
 

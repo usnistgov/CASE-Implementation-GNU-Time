@@ -13,7 +13,7 @@
 
 SHELL := /bin/bash
 
-PYTHON3 ?= $(shell which python3.8 2>/dev/null || which python3.7 2>/dev/null || which python3.6 2>/dev/null || which python3)
+PYTHON3 ?= python3
 
 # This recipe intentionally blank.
 all:

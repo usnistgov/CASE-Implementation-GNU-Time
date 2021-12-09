@@ -17,7 +17,7 @@ top_srcdir := $(shell cd .. ; pwd)
 
 srcdir := $(shell pwd)
 
-PYTHON3 ?= $(shell which python3.8 2>/dev/null || which python3.7 2>/dev/null || which python3.6 2>/dev/null || which python3)
+PYTHON3 ?= python3
 
 # Dependencies are listed here in desired execution-progression order.
 all: \

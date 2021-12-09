@@ -69,7 +69,7 @@ echo.txt.time.log: \
 process.json: \
   process.ttl \
   $(RDF_TOOLKIT_JAR) \
-  $(tests_srcdir)/src/compact.py
+  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py
 	java -jar $(RDF_TOOLKIT_JAR) \
 	  --infer-base-iri \
 	  --inline-blank-nodes \
@@ -78,9 +78,9 @@ process.json: \
 	  --target __$@ \
 	  --target-format json-ld
 	source $(tests_srcdir)/venv_minimal/bin/activate \
-	  && python $(tests_srcdir)/src/compact.py \
-	    __$@ \
-	    _$@
+	  && python3 $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py \
+	    _$@ \
+	    __$@
 	rm __$@
 	mv _$@ $@
 

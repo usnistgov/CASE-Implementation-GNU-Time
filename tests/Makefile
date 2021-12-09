@@ -17,7 +17,7 @@ top_srcdir := $(shell cd .. ; pwd)
 
 srcdir := $(shell pwd)
 
-PYTHON3 ?= $(shell which python3.8 2>/dev/null || which python3.7 2>/dev/null || which python3.6 2>/dev/null || which python3)
+PYTHON3 ?= python3
 
 # Dependencies are listed here in desired execution-progression order.
 all: \
@@ -45,8 +45,7 @@ all: \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv
-	$(PYTHON3) -m virtualenv \
-	  --python=$(PYTHON3) \
+	$(PYTHON3) -m venv \
 	  venv
 	source venv/bin/activate \
 	  && pip install \
@@ -75,8 +74,7 @@ all: \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv_minimal
-	$(PYTHON3) -m virtualenv \
-	  --python=$(PYTHON3) \
+	$(PYTHON3) -m venv \
 	  venv_minimal
 	source venv_minimal/bin/activate \
 	  && pip install \

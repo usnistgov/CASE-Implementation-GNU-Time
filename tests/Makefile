@@ -51,7 +51,8 @@ all: \
 	  && pip install \
 	    --upgrade \
 	    pip \
-	    setuptools
+	    setuptools \
+	    wheel
 	source venv/bin/activate \
 	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
 	    && pip install \
@@ -80,7 +81,8 @@ all: \
 	  && pip install \
 	    --upgrade \
 	    pip \
-	    setuptools
+	    setuptools \
+	    wheel
 	source venv_minimal/bin/activate \
 	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
 	    && pip install \

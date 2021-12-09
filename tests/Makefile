@@ -45,8 +45,7 @@ all: \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv
-	$(PYTHON3) -m virtualenv \
-	  --python=$(PYTHON3) \
+	$(PYTHON3) -m venv \
 	  venv
 	source venv/bin/activate \
 	  && pip install \
@@ -75,8 +74,7 @@ all: \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv_minimal
-	$(PYTHON3) -m virtualenv \
-	  --python=$(PYTHON3) \
+	$(PYTHON3) -m venv \
 	  venv_minimal
 	source venv_minimal/bin/activate \
 	  && pip install \

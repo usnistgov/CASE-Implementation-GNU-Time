@@ -130,7 +130,7 @@ class ProcessUCOObject(object):
         str_value = str(value) # For e.g. datetime objects.
         # Confirm text is ISO-8601.
         check_value = dateutil.parser.isoparse(str_value)
-        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.createdTime, rdflib.Literal(str_value, datatype=NS_XSD.dateTime)))
+        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.observableCreatedTime, rdflib.Literal(str_value, datatype=NS_XSD.dateTime)))
         self._created_time = value
         return self._created_time
 

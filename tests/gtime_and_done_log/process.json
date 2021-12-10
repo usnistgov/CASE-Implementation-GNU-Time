@@ -6,19 +6,19 @@
         "uco-observable": "https://unifiedcyberontology.org/ontology/uco/observable#",
         "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
-    "@id": "kb:process-0217fca4-0ab4-545e-839a-cf2d95d611c2",
+    "@id": "kb:process-17a5c550-fc88-548e-8770-6a51c38b23a1",
     "@type": "uco-observable:ObservableObject",
     "uco-core:hasFacet": {
         "@type": "uco-observable:ProcessFacet",
-        "uco-observable:createdTime": {
-            "@type": "xsd:dateTime",
-            "@value": "2020-10-14T14:07:39.267912-04:00"
-        },
         "uco-observable:exitStatus": {
             "@type": "xsd:long",
             "@value": "0"
         },
         "uco-observable:exitTime": {
+            "@type": "xsd:dateTime",
+            "@value": "2020-10-14T14:07:39.267912-04:00"
+        },
+        "uco-observable:observableCreatedTime": {
             "@type": "xsd:dateTime",
             "@value": "2020-10-14T14:07:39.267912-04:00"
         }

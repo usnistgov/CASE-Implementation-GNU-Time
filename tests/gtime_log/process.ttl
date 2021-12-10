@@ -6,13 +6,13 @@
 @prefix uco-observable: <https://unifiedcyberontology.org/ontology/uco/observable#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-kb:process-3a9ea474-e037-5af2-bed2-749bbf259aa3
+kb:process-3613c41c-3c86-5f26-a163-0cc0b041f1be
 	a uco-observable:ObservableObject ;
 	uco-core:hasFacet [
 		a uco-observable:ProcessFacet ;
-		uco-observable:createdTime "2021-03-23T17:54:43.690448+00:00"^^xsd:dateTime ;
 		uco-observable:exitStatus "0"^^xsd:long ;
-		uco-observable:exitTime "2021-03-23T17:54:43.690448+00:00"^^xsd:dateTime ;
+		uco-observable:exitTime "2020-10-20T22:17:27+00:00"^^xsd:dateTime ;
+		uco-observable:observableCreatedTime "2020-10-20T22:17:27+00:00"^^xsd:dateTime ;
 	] ;
 	.
 

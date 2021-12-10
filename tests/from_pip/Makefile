@@ -97,6 +97,7 @@ process.json: \
 
 process.ttl: \
   $(tests_srcdir)/.venv.done.log \
+  $(top_srcdir)/case_gnu_time/__init__.py \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@

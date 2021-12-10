@@ -49,7 +49,7 @@ class ProcessUCOObject(object):
 
         # Guarantee at least one triple enters the graph.
         self._node = rdflib.URIRef(ns_base[prefix_slug + case_utils.local_uuid.local_uuid()])
-        self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.ObservableObject))
+        self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.Process))
 
         self._bnode_process = None
         self._created_time = None

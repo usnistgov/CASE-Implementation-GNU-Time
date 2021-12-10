@@ -16,6 +16,8 @@ import os
 
 import rdflib.plugins.sparql
 
+import case_utils.ontology
+
 _logger = logging.getLogger(os.path.basename(__file__))
 
 srcdir = os.path.dirname(__file__)
@@ -24,6 +26,7 @@ def _parse_graph(filename):
     graph_filename = os.path.join(srcdir, filename)
     graph = rdflib.Graph()
     graph.parse(graph_filename)
+    case_utils.ontology.load_subclass_hierarchy(graph)
     return graph
 
 def _test_as_import_load(graph_filename):
@@ -41,7 +44,7 @@ SELECT ?nProcessObject
 WHERE
 {
   ?nProcessObject
-    a uco-observable:ObservableObject ;
+    a/rdfs:subClassOf* uco-observable:ObservableObject ;
     uco-core:hasFacet ?nProcessFacet ;
     .
 

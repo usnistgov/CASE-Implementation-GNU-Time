@@ -141,7 +141,7 @@ class ProcessUCOObject(object):
     @exit_status.setter
     def exit_status(self, value):
         assert isinstance(value, int)
-        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value, datatype=NS_XSD.long)))
+        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value)))
         return self._exit_status
 
     @property

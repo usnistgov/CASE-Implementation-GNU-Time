@@ -47,7 +47,7 @@ WHERE
 
   ?nProcessFacet
     a uco-observable:ProcessFacet ;
-    uco-observable:exitStatus "0"^^xsd:long ;
+    uco-observable:exitStatus 0 ;
     .
 }
 """, initNs=nsdict)

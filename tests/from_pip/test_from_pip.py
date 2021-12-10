@@ -17,13 +17,13 @@ import rdflib.plugins.sparql
 
 srcdir = os.path.dirname(__file__)
 
-def _parse_graph(filename):
+def _parse_graph(filename) -> rdflib.Graph:
     graph_filename = os.path.join(srcdir, filename)
     graph = rdflib.Graph()
     graph.parse(graph_filename)
     return graph
 
-def test_from_pip_validation():
+def test_from_pip_validation() -> None:
     graph = _parse_graph("validation.ttl")
     result = None
     for triple in graph.triples((None, rdflib.SH.conforms, None)):

@@ -13,7 +13,7 @@
 
 SHELL := /bin/bash
 
-PYTHON3 ?= $(shell which python3.8 2>/dev/null || which python3.7 2>/dev/null || which python3.6 2>/dev/null || which python3)
+PYTHON3 ?= python3
 
 # This recipe intentionally blank.
 all:
@@ -48,7 +48,7 @@ clean:
 	  clean
 	@#A full clean here erases test files and causes unnecessary rebuilding for the purposes of testing GNU Time mapping.
 	@rm -f \
-	  dependencies/CASE-Examples-QC/.lib.done.log
+	  dependencies/CASE-Examples-QC/.*.done.log
 	@test ! -d dependencies/CASE-Examples-QC/tests \
 	  || rm -f dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt
 
@@ -60,7 +60,6 @@ dependencies/CASE-Examples-QC/tests/ontology_vocabulary.txt: \
 	  PYTHON3=$(PYTHON3) \
 	  --directory dependencies/CASE-Examples-QC \
 	  .git_submodule_init.done.log \
-	  .lib.done.log \
 	  .venv.done.log
 	$(MAKE) \
 	  PYTHON3=$(PYTHON3) \

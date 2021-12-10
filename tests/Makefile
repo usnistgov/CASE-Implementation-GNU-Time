@@ -17,7 +17,7 @@ top_srcdir := $(shell cd .. ; pwd)
 
 srcdir := $(shell pwd)
 
-PYTHON3 ?= $(shell which python3.8 2>/dev/null || which python3.7 2>/dev/null || which python3.6 2>/dev/null || which python3)
+PYTHON3 ?= python3
 
 # Dependencies are listed here in desired execution-progression order.
 all: \
@@ -35,27 +35,37 @@ all: \
   check-from_pip \
   check-gtime_log \
   check-gtime_and_done_log \
+  check-mypy \
   download
 
 .venv.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
   $(top_srcdir)/case_gnu_time/__init__.py \
-  $(top_srcdir)/case_gnu_time/local_uuid.py \
+  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv
-	$(PYTHON3) -m virtualenv \
-	  --python=$(PYTHON3) \
+	$(PYTHON3) -m venv \
 	  venv
 	source venv/bin/activate \
 	  && pip install \
 	    --upgrade \
 	    pip \
-	    setuptools
+	    setuptools \
+	    wheel
+	source venv/bin/activate \
+	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
+	    && pip install \
+	      .
+	source venv/bin/activate \
+	  && pip install \
+	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
 	source venv/bin/activate \
 	  && cd $(top_srcdir) \
-	    && python3 setup.py install
+	    && pip install \
+	      --editable \
+	      .
 	source venv/bin/activate \
 	  && pip install \
 	    -r requirements.txt
@@ -63,43 +73,47 @@ all: \
 
 .venv_minimal.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
+  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \
   requirements.txt
 	rm -rf venv_minimal
-	$(PYTHON3) -m virtualenv \
-	  --python=$(PYTHON3) \
+	$(PYTHON3) -m venv \
 	  venv_minimal
 	source venv_minimal/bin/activate \
 	  && pip install \
 	    --upgrade \
 	    pip \
-	    setuptools
+	    setuptools \
+	    wheel
+	source venv_minimal/bin/activate \
+	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
+	    && pip install \
+	      .
+	source venv_minimal/bin/activate \
+	  && pip install \
+	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
 	source venv_minimal/bin/activate \
 	  && pip install \
 	    -r requirements.txt
 	touch $@
 
 all-as_import: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv.done.log
 	$(MAKE) \
 	  --directory as_import
 
 all-from_pip: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv.done.log
 	$(MAKE) \
 	  --directory from_pip
 
 all-gtime_log: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv_minimal.done.log
 	$(MAKE) \
 	  --directory gtime_log
 
 all-gtime_and_done_log: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv_minimal.done.log
 	$(MAKE) \
 	  --directory gtime_and_done_log
@@ -109,7 +123,8 @@ check: \
   check-gtime_log \
   check-gtime_and_done_log \
   check-from_pip \
-  check-as_import
+  check-as_import \
+  check-mypy
 
 check-as_import: \
   all-as_import
@@ -134,6 +149,16 @@ check-gtime_and_done_log: \
 	$(MAKE) \
 	  --directory gtime_and_done_log \
 	  check
+
+check-mypy: \
+  .venv.done.log
+	source venv/bin/activate \
+	  && mypy \
+	    $(top_srcdir)/case_gnu_time \
+	    as_import \
+	    from_pip \
+	    gtime_and_done_log \
+	    gtime_log
 
 clean:
 	@$(MAKE) \

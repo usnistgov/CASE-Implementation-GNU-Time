@@ -17,7 +17,7 @@ top_srcdir := $(shell cd ../.. ; pwd)
 
 qc_srcdir := $(top_srcdir)/dependencies/CASE-Examples-QC
 
-case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE
+case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE-Utilities-Python/dependencies/CASE
 
 tests_srcdir := $(top_srcdir)/tests
 
@@ -40,12 +40,17 @@ endif
 RDF_TOOLKIT_JAR := $(case_srcdir)/lib/rdf-toolkit.jar
 
 all: \
-  undefined_vocabulary.txt
+  undefined_vocabulary.txt \
+  validation.ttl
 
 check: \
-  undefined_vocabulary.txt
+  undefined_vocabulary.txt \
+  validation.ttl
 	@test ! -s undefined_vocabulary.txt \
 	  || (echo "ERROR:tests/gtime_and_done_log/Makefile:The output in process.json has undefined CASE or UCO terms.  The first few are:" >&2 && head undefined_vocabulary.txt >&2 && exit 1)
+	source $(tests_srcdir)/venv_minimal/bin/activate \
+	  && pytest \
+	    --log-level=DEBUG
 
 clean:
 	@rm -f \
@@ -79,8 +84,7 @@ echo.txt.time.log: \
 
 process.json: \
   process.ttl \
-  $(RDF_TOOLKIT_JAR) \
-  $(tests_srcdir)/src/compact.py
+  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py
 	java -jar $(RDF_TOOLKIT_JAR) \
 	  --infer-base-iri \
 	  --inline-blank-nodes \
@@ -89,15 +93,16 @@ process.json: \
 	  --target __$@ \
 	  --target-format json-ld
 	source $(tests_srcdir)/venv_minimal/bin/activate \
-	  && python $(tests_srcdir)/src/compact.py \
-	    __$@ \
-	    _$@
+	  && python3 $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py \
+	    _$@ \
+	    __$@
 	rm __$@
 	mv _$@ $@
 
 process.ttl: \
+  $(RDF_TOOLKIT_JAR) \
+  $(tests_srcdir)/.venv_minimal.done.log \
   $(top_srcdir)/case_gnu_time/__init__.py \
-  $(top_srcdir)/case_gnu_time/local_uuid.py \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@
@@ -138,3 +143,23 @@ undefined_vocabulary.txt: \
 	    > $@_
 	rm $@__
 	mv $@_ $@
+
+validation.ttl: \
+  process.json
+	rm -f __$@
+	source $(tests_srcdir)/venv_minimal/bin/activate \
+	  && case_validate \
+	    --format turtle \
+	    --output __$@ \
+	    $< \
+	    ; rc=$$? ; test 1 -eq $$rc -o 0 -eq $$rc
+	test -s __$@
+	java -jar $(RDF_TOOLKIT_JAR) \
+	  --infer-base-iri \
+	  --inline-blank-nodes \
+	  --source __$@ \
+	  --source-format turtle \
+	  --target _$@ \
+	  --target-format turtle
+	rm __$@
+	mv _$@ $@

@@ -62,7 +62,7 @@ all: \
 	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
 	source venv/bin/activate \
 	  && cd $(top_srcdir) \
-	    && python3 setup.py install
+	    && pip install .
 	source venv/bin/activate \
 	  && pip install \
 	    -r requirements.txt

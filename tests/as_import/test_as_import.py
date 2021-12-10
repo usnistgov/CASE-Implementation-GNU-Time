@@ -14,7 +14,7 @@
 import logging
 import os
 
-import rdflib
+import rdflib.plugins.sparql
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
@@ -31,15 +31,6 @@ def _test_as_import_load(graph_filename, format):
     assert len(graph) > 0
 
 def _test_as_import_query(graph_filename, format):
-    #TODO This try block can be removed, and the import put at the script's top, when rdflib Issue #1190 is resolved.
-    # https://github.com/RDFLib/rdflib/issues/1190
-    try:
-        import rdflib.plugins.sparql
-    except:
-        import pyparsing
-        _logger.debug("pyparsing.__version__ = %r." % pyparsing.__version__)
-        raise
-
     graph = _parse_graph(graph_filename, format)
 
     nsdict = {k:v for (k,v) in graph.namespace_manager.namespaces()}

@@ -96,25 +96,21 @@ all: \
 	touch $@
 
 all-as_import: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv.done.log
 	$(MAKE) \
 	  --directory as_import
 
 all-from_pip: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv.done.log
 	$(MAKE) \
 	  --directory from_pip
 
 all-gtime_log: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv_minimal.done.log
 	$(MAKE) \
 	  --directory gtime_log
 
 all-gtime_and_done_log: \
-  $(top_srcdir)/dependencies/CASE-Examples-QC/.lib.done.log \
   .venv_minimal.done.log
 	$(MAKE) \
 	  --directory gtime_and_done_log

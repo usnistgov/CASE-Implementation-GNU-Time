@@ -17,7 +17,7 @@ top_srcdir := $(shell cd ../.. ; pwd)
 
 qc_srcdir := $(top_srcdir)/dependencies/CASE-Examples-QC
 
-case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE
+case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE-Utilities-Python/dependencies/CASE
 
 tests_srcdir := $(top_srcdir)/tests
 

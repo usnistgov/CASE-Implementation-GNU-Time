@@ -79,7 +79,6 @@ echo.txt.time.log: \
 
 process.json: \
   process.ttl \
-  $(RDF_TOOLKIT_JAR) \
   $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py
 	java -jar $(RDF_TOOLKIT_JAR) \
 	  --infer-base-iri \
@@ -96,6 +95,7 @@ process.json: \
 	mv _$@ $@
 
 process.ttl: \
+  $(RDF_TOOLKIT_JAR) \
   $(top_srcdir)/case_gnu_time/__init__.py \
   echo.txt.done.log \
   echo.txt.time.log

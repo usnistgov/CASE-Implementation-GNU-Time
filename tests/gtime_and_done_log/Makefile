@@ -40,12 +40,17 @@ endif
 RDF_TOOLKIT_JAR := $(case_srcdir)/lib/rdf-toolkit.jar
 
 all: \
-  undefined_vocabulary.txt
+  undefined_vocabulary.txt \
+  validation.ttl
 
 check: \
-  undefined_vocabulary.txt
+  undefined_vocabulary.txt \
+  validation.ttl
 	@test ! -s undefined_vocabulary.txt \
 	  || (echo "ERROR:tests/gtime_and_done_log/Makefile:The output in process.json has undefined CASE or UCO terms.  The first few are:" >&2 && head undefined_vocabulary.txt >&2 && exit 1)
+	source $(tests_srcdir)/venv_minimal/bin/activate \
+	  && pytest \
+	    --log-level=DEBUG
 
 clean:
 	@rm -f \
@@ -96,6 +101,7 @@ process.json: \
 
 process.ttl: \
   $(RDF_TOOLKIT_JAR) \
+  $(tests_srcdir)/.venv_minimal.done.log \
   $(top_srcdir)/case_gnu_time/__init__.py \
   echo.txt.done.log \
   echo.txt.time.log
@@ -137,3 +143,23 @@ undefined_vocabulary.txt: \
 	    > $@_
 	rm $@__
 	mv $@_ $@
+
+validation.ttl: \
+  process.json
+	rm -f __$@
+	source $(tests_srcdir)/venv_minimal/bin/activate \
+	  && case_validate \
+	    --format turtle \
+	    --output __$@ \
+	    $< \
+	    ; rc=$$? ; test 1 -eq $$rc -o 0 -eq $$rc
+	test -s __$@
+	java -jar $(RDF_TOOLKIT_JAR) \
+	  --infer-base-iri \
+	  --inline-blank-nodes \
+	  --source __$@ \
+	  --source-format turtle \
+	  --target _$@ \
+	  --target-format turtle
+	rm __$@
+	mv _$@ $@

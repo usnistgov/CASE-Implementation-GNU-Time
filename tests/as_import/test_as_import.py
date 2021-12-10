@@ -74,3 +74,10 @@ def test_as_import_query_json():
 
 def test_as_import_query_turtle():
     _test_as_import_query("process.ttl")
+
+def test_as_import_validation():
+    graph = _parse_graph("validation.ttl")
+    result = None
+    for triple in graph.triples((None, rdflib.SH.conforms, None)):
+        result = triple[2].toPython()
+    assert result

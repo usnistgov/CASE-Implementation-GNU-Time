@@ -20,18 +20,18 @@ _logger = logging.getLogger(os.path.basename(__file__))
 
 srcdir = os.path.dirname(__file__)
 
-def _parse_graph(filename, format):
+def _parse_graph(filename):
     graph_filename = os.path.join(srcdir, filename)
     graph = rdflib.Graph()
-    graph.parse(graph_filename, format=format)
+    graph.parse(graph_filename)
     return graph
 
-def _test_as_import_load(graph_filename, format):
-    graph = _parse_graph(graph_filename, format)
+def _test_as_import_load(graph_filename):
+    graph = _parse_graph(graph_filename)
     assert len(graph) > 0
 
-def _test_as_import_query(graph_filename, format):
-    graph = _parse_graph(graph_filename, format)
+def _test_as_import_query(graph_filename):
+    graph = _parse_graph(graph_filename)
 
     nsdict = {k:v for (k,v) in graph.namespace_manager.namespaces()}
 
@@ -64,13 +64,13 @@ WHERE
     assert len(iris) == 1
 
 def test_as_import_load_json():
-    _test_as_import_load("process.json", "json-ld")
+    _test_as_import_load("process.json")
 
 def test_as_import_load_turtle():
-    _test_as_import_load("process.ttl", "turtle")
+    _test_as_import_load("process.ttl")
 
 def test_as_import_query_json():
-    _test_as_import_query("process.json", "json-ld")
+    _test_as_import_query("process.json")
 
 def test_as_import_query_turtle():
-    _test_as_import_query("process.ttl", "turtle")
+    _test_as_import_query("process.ttl")

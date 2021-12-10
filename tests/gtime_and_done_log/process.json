@@ -11,7 +11,7 @@
     "uco-core:hasFacet": {
         "@type": "uco-observable:ProcessFacet",
         "uco-observable:exitStatus": {
-            "@type": "xsd:long",
+            "@type": "xsd:integer",
             "@value": "0"
         },
         "uco-observable:exitTime": {

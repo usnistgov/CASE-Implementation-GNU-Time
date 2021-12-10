@@ -21,10 +21,12 @@ import argparse
 import datetime
 import logging
 import os
+import typing
 
 import dateutil
 import dateutil.parser
-import rdflib
+import dateutil.relativedelta
+import rdflib.util
 
 import case_utils
 
@@ -36,7 +38,7 @@ NS_UCO_OBSERVABLE = rdflib.Namespace("https://unifiedcyberontology.org/ontology/
 NS_XSD = rdflib.namespace.XSD
 
 class ProcessUCOObject(object):
-    def __init__(self, graph, ns_base, **kwargs):
+    def __init__(self, graph, ns_base, **kwargs) -> None:
         """
         Initializing a ProcessUCOObject will create one triple in the graph.  To add data to the new node, call populate_from_gnu_time_log().
         """
@@ -51,12 +53,12 @@ class ProcessUCOObject(object):
         self._node = rdflib.URIRef(ns_base[prefix_slug + case_utils.local_uuid.local_uuid()])
         self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.Process))
 
-        self._bnode_process = None
-        self._created_time = None
-        self._exit_status = None
-        self._exit_time = None
+        self._bnode_process: typing.Optional[rdflib.BNode] = None
+        self._created_time: typing.Optional[str] = None
+        self._exit_status: typing.Optional[int] = None
+        self._exit_time: typing.Optional[str] = None
 
-    def populate_from_gnu_time_log(self, gnu_time_log):
+    def populate_from_gnu_time_log(self, gnu_time_log) -> None:
         """
         This method populates Process data from a GNU Time log file.  If self.exit_time is not set before this method is called, it will be set by reading the modification time of gnu_time_log.
         """
@@ -106,7 +108,7 @@ class ProcessUCOObject(object):
         self.created_time = created_time_datetime.isoformat()
 
     @property
-    def bnode_process(self):
+    def bnode_process(self) -> rdflib.BNode:
         """
         Created on first access.
         """
@@ -117,11 +119,11 @@ class ProcessUCOObject(object):
         return self._bnode_process
 
     @property
-    def created_time(self):
+    def created_time(self) -> typing.Optional[str]:
         return self._created_time
 
     @created_time.setter
-    def created_time(self, value):
+    def created_time(self, value: str) -> None:
         """
         Only set once.
         """
@@ -132,24 +134,22 @@ class ProcessUCOObject(object):
         check_value = dateutil.parser.isoparse(str_value)
         self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.observableCreatedTime, rdflib.Literal(str_value, datatype=NS_XSD.dateTime)))
         self._created_time = value
-        return self._created_time
 
     @property
-    def exit_status(self):
+    def exit_status(self) -> typing.Optional[int]:
         return self._exit_status
 
     @exit_status.setter
-    def exit_status(self, value):
+    def exit_status(self, value: int) -> None:
         assert isinstance(value, int)
         self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value)))
-        return self._exit_status
 
     @property
-    def exit_time(self):
+    def exit_time(self) -> typing.Optional[str]:
         return self._exit_time
 
     @exit_time.setter
-    def exit_time(self, value):
+    def exit_time(self, value: str) -> None:
         """
         Only set once.
         """
@@ -161,16 +161,15 @@ class ProcessUCOObject(object):
         literal_time = rdflib.Literal(str_value, datatype=NS_XSD.dateTime)
         self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.exitTime, literal_time))
         self._exit_time = value
-        return self._exit_time
 
     @property
-    def node(self):
+    def node(self) -> rdflib.URIRef:
         """
         Read-only property.
         """
         return self._node
 
-def build_process_object(graph, ns_base, gnu_time_log, mtime=None, prefix_slug=None):
+def build_process_object(graph, ns_base, gnu_time_log, mtime=None, prefix_slug=None) -> ProcessUCOObject:
     """
     This function builds a Process UCO Object from a file that contains the output of GNU Time's --verbose flag.
 
@@ -204,7 +203,7 @@ argument_parser.add_argument("--output-format", help="Override extension-based f
 argument_parser.add_argument("gnu_time_log", help="A file recording the output of the process wrapper GNU time, with the --verbose flag (recorded with the --output flag).  Used to retrieve exit status, conclusion time (if --done-log not provided), and run length.")
 argument_parser.add_argument("out_graph", help="A self-contained RDF graph file, in the format either requested by --output-format or guessed based on extension.")
 
-def main():
+def main() -> None:
     args = argument_parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
@@ -221,9 +220,9 @@ def main():
     process_object = build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str)
 
     #_logger.debug("args.output_format = %r." % args.output_format)
-    output_format = args.output_format or case_utils.guess_format(args.out_graph)
+    output_format = args.output_format or rdflib.util.guess_format(args.out_graph)
 
-    graph.serialize(destination=args.out_graph, format=output_format)
+    graph.serialize(destination=args.out_graph)
 
 if __name__ == "__main__":
     main()

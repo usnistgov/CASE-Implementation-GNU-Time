@@ -22,18 +22,18 @@ _logger = logging.getLogger(os.path.basename(__file__))
 
 srcdir = os.path.dirname(__file__)
 
-def _parse_graph(filename):
+def _parse_graph(filename) -> rdflib.Graph:
     graph_filename = os.path.join(srcdir, filename)
     graph = rdflib.Graph()
     graph.parse(graph_filename)
     case_utils.ontology.load_subclass_hierarchy(graph)
     return graph
 
-def _test_as_import_load(graph_filename):
+def _test_as_import_load(graph_filename) -> None:
     graph = _parse_graph(graph_filename)
     assert len(graph) > 0
 
-def _test_as_import_query(graph_filename):
+def _test_as_import_query(graph_filename) -> None:
     graph = _parse_graph(graph_filename)
 
     nsdict = {k:v for (k,v) in graph.namespace_manager.namespaces()}
@@ -66,19 +66,19 @@ WHERE
         iris.add(n_process_object.toPython())
     assert len(iris) == 1
 
-def test_as_import_load_json():
+def test_as_import_load_json() -> None:
     _test_as_import_load("process.json")
 
-def test_as_import_load_turtle():
+def test_as_import_load_turtle() -> None:
     _test_as_import_load("process.ttl")
 
-def test_as_import_query_json():
+def test_as_import_query_json() -> None:
     _test_as_import_query("process.json")
 
-def test_as_import_query_turtle():
+def test_as_import_query_turtle() -> None:
     _test_as_import_query("process.ttl")
 
-def test_as_import_validation():
+def test_as_import_validation() -> None:
     graph = _parse_graph("validation.ttl")
     result = None
     for triple in graph.triples((None, rdflib.SH.conforms, None)):

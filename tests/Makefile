@@ -35,6 +35,7 @@ all: \
   check-from_pip \
   check-gtime_log \
   check-gtime_and_done_log \
+  check-mypy \
   download
 
 .venv.done.log: \
@@ -122,7 +123,8 @@ check: \
   check-gtime_log \
   check-gtime_and_done_log \
   check-from_pip \
-  check-as_import
+  check-as_import \
+  check-mypy
 
 check-as_import: \
   all-as_import
@@ -147,6 +149,16 @@ check-gtime_and_done_log: \
 	$(MAKE) \
 	  --directory gtime_and_done_log \
 	  check
+
+check-mypy: \
+  .venv.done.log
+	source venv/bin/activate \
+	  && mypy \
+	    $(top_srcdir)/case_gnu_time \
+	    as_import \
+	    from_pip \
+	    gtime_and_done_log \
+	    gtime_log
 
 clean:
 	@$(MAKE) \

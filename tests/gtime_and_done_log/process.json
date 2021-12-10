@@ -7,7 +7,7 @@
         "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
     "@id": "kb:process-17a5c550-fc88-548e-8770-6a51c38b23a1",
-    "@type": "uco-observable:ObservableObject",
+    "@type": "uco-observable:Process",
     "uco-core:hasFacet": {
         "@type": "uco-observable:ProcessFacet",
         "uco-observable:exitStatus": {

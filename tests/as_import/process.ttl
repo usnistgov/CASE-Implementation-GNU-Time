@@ -7,7 +7,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 kb:custom-011a93fd-814b-537f-b111-ce4dceb373a6
-	a uco-observable:ObservableObject ;
+	a uco-observable:Process ;
 	uco-core:hasFacet [
 		a uco-observable:ProcessFacet ;
 		uco-observable:exitStatus "0"^^xsd:integer ;

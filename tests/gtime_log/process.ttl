@@ -7,10 +7,10 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 kb:process-3613c41c-3c86-5f26-a163-0cc0b041f1be
-	a uco-observable:ObservableObject ;
+	a uco-observable:Process ;
 	uco-core:hasFacet [
 		a uco-observable:ProcessFacet ;
-		uco-observable:exitStatus "0"^^xsd:long ;
+		uco-observable:exitStatus "0"^^xsd:integer ;
 		uco-observable:exitTime "2020-10-20T22:17:27+00:00"^^xsd:dateTime ;
 		uco-observable:observableCreatedTime "2020-10-20T22:17:27+00:00"^^xsd:dateTime ;
 	] ;

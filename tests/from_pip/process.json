@@ -2,25 +2,33 @@
     "@context": {
         "kb": "http://example.org/kb/",
         "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "uco-core": "https://unifiedcyberontology.org/ontology/uco/core#",
-        "uco-observable": "https://unifiedcyberontology.org/ontology/uco/observable#",
+        "uco-core": "https://ontology.unifiedcyberontology.org/uco/core/",
+        "uco-observable": "https://ontology.unifiedcyberontology.org/uco/observable/",
         "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
-    "@id": "kb:process-e7498b28-74d7-5952-a0e3-2f9e924bd662",
-    "@type": "uco-observable:Process",
-    "uco-core:hasFacet": {
-        "@type": "uco-observable:ProcessFacet",
-        "uco-observable:exitStatus": {
-            "@type": "xsd:integer",
-            "@value": "0"
+    "@graph": [
+        {
+            "@id": "kb:process-4fda47ea-3f4e-5205-8bd9-37f18053b5ce",
+            "@type": "uco-observable:Process",
+            "uco-core:hasFacet": {
+                "@id": "kb:process-facet-6b1782bf-f4a9-5187-915f-9bbdb0acb905"
+            }
         },
-        "uco-observable:exitTime": {
-            "@type": "xsd:dateTime",
-            "@value": "2020-10-14T14:07:39.267912-04:00"
-        },
-        "uco-observable:observableCreatedTime": {
-            "@type": "xsd:dateTime",
-            "@value": "2020-10-14T14:07:39.267912-04:00"
+        {
+            "@id": "kb:process-facet-6b1782bf-f4a9-5187-915f-9bbdb0acb905",
+            "@type": "uco-observable:ProcessFacet",
+            "uco-observable:exitStatus": {
+                "@type": "xsd:integer",
+                "@value": "0"
+            },
+            "uco-observable:exitTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2020-10-14T14:07:39.267912-04:00"
+            },
+            "uco-observable:observableCreatedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2020-10-14T14:07:39.267912-04:00"
+            }
         }
-    }
+    ]
 }

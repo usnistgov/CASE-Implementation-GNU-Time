@@ -2,17 +2,19 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix uco-core: <https://unifiedcyberontology.org/ontology/uco/core#> .
-@prefix uco-observable: <https://unifiedcyberontology.org/ontology/uco/observable#> .
+@prefix uco-core: <https://ontology.unifiedcyberontology.org/uco/core/> .
+@prefix uco-observable: <https://ontology.unifiedcyberontology.org/uco/observable/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-kb:process-e7498b28-74d7-5952-a0e3-2f9e924bd662
+kb:process-4fda47ea-3f4e-5205-8bd9-37f18053b5ce
 	a uco-observable:Process ;
-	uco-core:hasFacet [
-		a uco-observable:ProcessFacet ;
-		uco-observable:exitStatus "0"^^xsd:integer ;
-		uco-observable:exitTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
-		uco-observable:observableCreatedTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
-	] ;
+	uco-core:hasFacet kb:process-facet-6b1782bf-f4a9-5187-915f-9bbdb0acb905 ;
+	.
+
+kb:process-facet-6b1782bf-f4a9-5187-915f-9bbdb0acb905
+	a uco-observable:ProcessFacet ;
+	uco-observable:exitStatus "0"^^xsd:integer ;
+	uco-observable:exitTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
+	uco-observable:observableCreatedTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
 	.
 

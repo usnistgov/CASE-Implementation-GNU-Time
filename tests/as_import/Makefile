@@ -15,10 +15,6 @@ SHELL := /bin/bash
 
 top_srcdir := $(shell cd ../.. ; pwd)
 
-qc_srcdir := $(top_srcdir)/dependencies/CASE-Examples-QC
-
-case_srcdir := $(qc_srcdir)/dependencies/CASE-Examples/dependencies/CASE-Utilities-Python/dependencies/CASE
-
 tests_srcdir := $(top_srcdir)/tests
 
 # Use GNU date.
@@ -27,27 +23,13 @@ GDATE ?= $(shell which gdate || which date)
 # Use GNU time.
 GTIME ?= $(shell which gtime || which time)
 
-COMM ?= $(shell which gcomm 2>/dev/null || which comm)
-ifeq ($(COMM),)
-$(error comm not found)
-endif
-
-SORT ?= $(shell which gsort 2>/dev/null || which sort)
-ifeq ($(SORT),)
-$(error sort not found)
-endif
-
-RDF_TOOLKIT_JAR := $(case_srcdir)/lib/rdf-toolkit.jar
+RDF_TOOLKIT_JAR := $(top_srcdir)/dependencies/CASE-Utilities-Python/dependencies/CASE/dependencies/UCO/lib/rdf-toolkit.jar
 
 all: \
-  undefined_vocabulary.txt \
-  validation.ttl
+  process.json
 
 check: \
-  undefined_vocabulary.txt \
-  validation.ttl
-	@test ! -s undefined_vocabulary.txt \
-	  || (echo "ERROR:tests/as_import/Makefile:The output in process.json has undefined CASE or UCO terms.  The first few are:" >&2 && head undefined_vocabulary.txt >&2 && exit 1)
+  process.json
 	source $(tests_srcdir)/venv/bin/activate \
 	  && pytest \
 	    --log-level=DEBUG
@@ -96,6 +78,9 @@ process.json: \
 	  && python3 $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py \
 	    _$@ \
 	    __$@
+	source $(tests_srcdir)/venv/bin/activate \
+	  && case_validate \
+	    _$@
 	rm __$@
 	mv _$@ $@
 
@@ -107,54 +92,15 @@ process.ttl: \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@
-	export DEMO_UUID_REQUESTING_NONRANDOM=NONRANDOM_REQUESTED \
+	export CASE_DEMO_NONRANDOM_UUID_BASE=$(top_srcdir) \
 	  && source $(tests_srcdir)/venv/bin/activate \
 	    && python consumer.py \
 	      --done-log echo.txt.done.log \
 	      echo.txt.time.log \
 	      __$@
-	java -jar $(RDF_TOOLKIT_JAR) \
-	  --infer-base-iri \
-	  --inline-blank-nodes \
-	  --source __$@ \
-	  --source-format turtle \
-	  --target _$@ \
-	  --target-format turtle
-	rm __$@
-	mv _$@ $@
-
-undefined_vocabulary.txt: \
-  process.json \
-  $(qc_srcdir)/src/vocabulary_used.py \
-  $(qc_srcdir)/tests/ontology_vocabulary.txt
-	source $(qc_srcdir)/venv/bin/activate \
-	  && python3 $(qc_srcdir)/src/vocabulary_used.py \
-	    $< \
-	    > $@___
-	grep ':' $@___ \
-	  | egrep -v 'w3.org' \
-	    | grep -v '/kb/' \
-	      > $@__
-	rm $@___
-	LC_ALL=C \
-	  $(COMM) \
-	    -13 \
-	    $(qc_srcdir)/tests/ontology_vocabulary.txt \
-	    <(LC_ALL=C $(SORT) $@__) \
-	    > $@_
-	rm $@__
-	mv $@_ $@
-
-validation.ttl: \
-  process.json
-	rm -f __$@
 	source $(tests_srcdir)/venv/bin/activate \
 	  && case_validate \
-	    --format turtle \
-	    --output __$@ \
-	    $< \
-	    ; rc=$$? ; test 1 -eq $$rc -o 0 -eq $$rc
-	test -s __$@
+	    __$@
 	java -jar $(RDF_TOOLKIT_JAR) \
 	  --infer-base-iri \
 	  --inline-blank-nodes \

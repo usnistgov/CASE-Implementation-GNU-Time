@@ -19,12 +19,12 @@ import logging
 import os
 
 import rdflib.util
-import case_utils
 from case_utils.namespace import NS_UCO_CORE, NS_UCO_OBSERVABLE
 
 import case_gnu_time
 
 _logger = logging.getLogger(os.path.basename(__file__))
+
 
 def main() -> None:
     args = case_gnu_time.argument_parser.parse_args()
@@ -40,12 +40,15 @@ def main() -> None:
     if args.done_log:
         with open(args.done_log, "r") as mtime_fh:
             mtime_str = mtime_fh.read(64).strip()
-    process_object = case_gnu_time.build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str, "custom-")
+    _ = case_gnu_time.build_process_object(
+        graph, NS_BASE, args.gnu_time_log, mtime_str, "custom-"
+    )
 
     output_format = args.output_format or rdflib.util.guess_format(args.out_graph)
     assert isinstance(output_format, str)
 
     graph.serialize(destination=args.out_graph, format=output_format)
+
 
 if __name__ == "__main__":
     main()

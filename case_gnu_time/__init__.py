@@ -23,19 +23,25 @@ import logging
 import os
 import typing
 
+import case_utils
 import dateutil
 import dateutil.parser
 import dateutil.relativedelta
 import rdflib.util
-
-import case_utils
 from case_utils.namespace import NS_RDF, NS_UCO_CORE, NS_UCO_OBSERVABLE, NS_XSD
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
 
 class ProcessUCOObject(object):
-    def __init__(self, graph: rdflib.Graph, ns_base: rdflib.Namespace, *args: typing.Any, prefix_slug:str = "process-", **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        graph: rdflib.Graph,
+        ns_base: rdflib.Namespace,
+        *args: typing.Any,
+        prefix_slug: str = "process-",
+        **kwargs: typing.Any
+    ) -> None:
         """
         Initializing a ProcessUCOObject will create one triple in the graph.  To add data to the new node, call populate_from_gnu_time_log().
         """
@@ -64,7 +70,9 @@ class ProcessUCOObject(object):
             # Reminders on fromtimestamp vs. utcfromtimestamp:
             #   https://docs.python.org/3/library/datetime.html#datetime.datetime.utcfromtimestamp
             #   "To get an aware datetime object, call fromtimestamp()"
-            exit_time_datetime = datetime.datetime.fromtimestamp(st_time_log.st_mtime, tz=datetime.timezone.utc)
+            exit_time_datetime = datetime.datetime.fromtimestamp(
+                st_time_log.st_mtime, tz=datetime.timezone.utc
+            )
             exit_time_str = exit_time_datetime.isoformat()
             self.exit_time = exit_time_str
         else:
@@ -84,22 +92,22 @@ class ProcessUCOObject(object):
         elapsed_str = kvdict["Elapsed (wall clock) time (h:mm:ss or m:ss)"]
         elapsed_str_parts = elapsed_str.split(":")
         elapsed_seconds_str = elapsed_str_parts[-1]
-        elapsed_seconds = int(elapsed_str_parts[-1].split(".")[0])
-        elapsed_microseconds = int(elapsed_str_parts[-1].split(".")[1]) * 10000
+        elapsed_seconds = int(elapsed_seconds_str.split(".")[0])
+        elapsed_microseconds = int(elapsed_seconds_str.split(".")[1]) * 10000
         elapsed_minutes = int(elapsed_str_parts[-2])
         if len(elapsed_str_parts) == 3:
-            elapsed_minutes += (60 * int(elapsed_str_parts[-3]))
+            elapsed_minutes += 60 * int(elapsed_str_parts[-3])
 
         delta = dateutil.relativedelta.relativedelta(
-          minutes=elapsed_minutes,
-          seconds=elapsed_seconds,
-          microseconds=elapsed_microseconds
+            minutes=elapsed_minutes,
+            seconds=elapsed_seconds,
+            microseconds=elapsed_microseconds,
         )
 
-        #logging.debug("delta = %r." % delta)
+        # logging.debug("delta = %r." % delta)
         created_time_datetime = exit_time_datetime - delta
-        #logging.debug("created_time_datetime = %r." % created_time_datetime)
-        #logging.debug("exit_time_datetime = %r." % exit_time_datetime)
+        # logging.debug("created_time_datetime = %r." % created_time_datetime)
+        # logging.debug("exit_time_datetime = %r." % exit_time_datetime)
 
         self.created_time = created_time_datetime.isoformat()
 
@@ -112,12 +120,18 @@ class ProcessUCOObject(object):
         """
         Only set once.
         """
-        assert not value is None
+        assert value is not None
         assert self._created_time is None
-        str_value = str(value) # For e.g. datetime objects.
+        str_value = str(value)  # For e.g. datetime objects.
         # Confirm text is ISO-8601.
-        check_value = dateutil.parser.isoparse(str_value)
-        self.graph.add((self.n_process_facet, NS_UCO_OBSERVABLE.observableCreatedTime, rdflib.Literal(str_value, datatype=NS_XSD.dateTime)))
+        _ = dateutil.parser.isoparse(str_value)
+        self.graph.add(
+            (
+                self.n_process_facet,
+                NS_UCO_OBSERVABLE.observableCreatedTime,
+                rdflib.Literal(str_value, datatype=NS_XSD.dateTime),
+            )
+        )
         self._created_time = value
 
     @property
@@ -127,7 +141,9 @@ class ProcessUCOObject(object):
     @exit_status.setter
     def exit_status(self, value: int) -> None:
         assert isinstance(value, int)
-        self.graph.add((self.n_process_facet, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value)))
+        self.graph.add(
+            (self.n_process_facet, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value))
+        )
 
     @property
     def exit_time(self) -> typing.Optional[str]:
@@ -138,11 +154,11 @@ class ProcessUCOObject(object):
         """
         Only set once.
         """
-        assert not value is None
+        assert value is not None
         assert self._exit_time is None
-        str_value = str(value) # For e.g. datetime objects.
+        str_value = str(value)  # For e.g. datetime objects.
         # Confirm text is ISO-8601.
-        check_value = dateutil.parser.isoparse(str_value)
+        _ = dateutil.parser.isoparse(str_value)
         literal_time = rdflib.Literal(str_value, datatype=NS_XSD.dateTime)
         self.graph.add((self.n_process_facet, NS_UCO_OBSERVABLE.exitTime, literal_time))
         self._exit_time = value
@@ -153,8 +169,12 @@ class ProcessUCOObject(object):
         Created on first access.
         """
         if self._n_process_facet is None:
-            self._n_process_facet = self.ns_base["process-facet-" + case_utils.local_uuid.local_uuid()]
-            self.graph.add((self._n_process_facet, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet))
+            self._n_process_facet = self.ns_base[
+                "process-facet-" + case_utils.local_uuid.local_uuid()
+            ]
+            self.graph.add(
+                (self._n_process_facet, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet)
+            )
             self.graph.add((self.node, NS_UCO_CORE.hasFacet, self._n_process_facet))
         return self._n_process_facet
 
@@ -178,7 +198,7 @@ def build_process_object(
     ns_base: rdflib.Namespace,
     gnu_time_log: str,
     mtime: typing.Optional[str] = None,
-    prefix_slug: typing.Optional[str] = None
+    prefix_slug: typing.Optional[str] = None,
 ) -> ProcessUCOObject:
     """
     This function builds a Process UCO Object from a file that contains the output of GNU Time's --verbose flag.
@@ -194,24 +214,37 @@ def build_process_object(
     case_utils.local_uuid.configure()
 
     process_object_kwargs = dict()
-    if not prefix_slug is None:
+    if prefix_slug is not None:
         process_object_kwargs["prefix_slug"] = prefix_slug
     process_object = ProcessUCOObject(graph, ns_base, **process_object_kwargs)
 
-    if not mtime is None:
+    if mtime is not None:
         process_object.exit_time = mtime
 
     process_object.populate_from_gnu_time_log(gnu_time_log)
 
     return process_object
 
+
 argument_parser = argparse.ArgumentParser(epilog=__doc__)
 argument_parser.add_argument("--base-prefix", default="http://example.org/kb/")
 argument_parser.add_argument("--debug", action="store_true")
-argument_parser.add_argument("--done-log", help="A file recording the completion time of the process that GNU Time was timing, as an ISO-8601 string.  If this argument is not provided, the Stat mtime of gnu_time_log is used.")
-argument_parser.add_argument("--output-format", help="Override extension-based format guesser.")
-argument_parser.add_argument("gnu_time_log", help="A file recording the output of the process wrapper GNU time, with the --verbose flag (recorded with the --output flag).  Used to retrieve exit status, conclusion time (if --done-log not provided), and run length.")
-argument_parser.add_argument("out_graph", help="A self-contained RDF graph file, in the format either requested by --output-format or guessed based on extension.")
+argument_parser.add_argument(
+    "--done-log",
+    help="A file recording the completion time of the process that GNU Time was timing, as an ISO-8601 string.  If this argument is not provided, the Stat mtime of gnu_time_log is used.",
+)
+argument_parser.add_argument(
+    "--output-format", help="Override extension-based format guesser."
+)
+argument_parser.add_argument(
+    "gnu_time_log",
+    help="A file recording the output of the process wrapper GNU time, with the --verbose flag (recorded with the --output flag).  Used to retrieve exit status, conclusion time (if --done-log not provided), and run length.",
+)
+argument_parser.add_argument(
+    "out_graph",
+    help="A self-contained RDF graph file, in the format either requested by --output-format or guessed based on extension.",
+)
+
 
 def main() -> None:
     args = argument_parser.parse_args()
@@ -228,12 +261,14 @@ def main() -> None:
     if args.done_log:
         with open(args.done_log, "r") as mtime_fh:
             mtime_str = mtime_fh.read(64).strip()
-    process_object = build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str)
+    _ = build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str)
 
-    #_logger.debug("args.output_format = %r." % args.output_format)
+    # _logger.debug("args.output_format = %r." % args.output_format)
     output_format = args.output_format or rdflib.util.guess_format(args.out_graph)
+    assert isinstance(output_format, str)
 
-    graph.serialize(destination=args.out_graph)
+    graph.serialize(destination=args.out_graph, format=output_format)
+
 
 if __name__ == "__main__":
     main()

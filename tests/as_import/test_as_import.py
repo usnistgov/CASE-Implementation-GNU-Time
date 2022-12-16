@@ -22,24 +22,24 @@ _logger = logging.getLogger(os.path.basename(__file__))
 
 srcdir = os.path.dirname(__file__)
 
-def _parse_graph(filename) -> rdflib.Graph:
+def _parse_graph(filename: str) -> rdflib.Graph:
     graph_filename = os.path.join(srcdir, filename)
     graph = rdflib.Graph()
     graph.parse(graph_filename)
     case_utils.ontology.load_subclass_hierarchy(graph)
     return graph
 
-def _test_as_import_load(graph_filename) -> None:
+def _test_as_import_load(graph_filename: str) -> None:
     graph = _parse_graph(graph_filename)
     assert len(graph) > 0
 
-def _test_as_import_query(graph_filename) -> None:
+def _test_as_import_query(graph_filename: str) -> None:
     graph = _parse_graph(graph_filename)
 
     nsdict = {k:v for (k,v) in graph.namespace_manager.namespaces()}
 
     iris = set()
-    query = rdflib.plugins.sparql.prepareQuery("""\
+    query = rdflib.plugins.sparql.processor.prepareQuery("""\
 SELECT ?nProcessObject
 WHERE
 {
@@ -77,10 +77,3 @@ def test_as_import_query_json() -> None:
 
 def test_as_import_query_turtle() -> None:
     _test_as_import_query("process.ttl")
-
-def test_as_import_validation() -> None:
-    graph = _parse_graph("validation.ttl")
-    result = None
-    for triple in graph.triples((None, rdflib.SH.conforms, None)):
-        result = triple[2].toPython()
-    assert result

@@ -29,16 +29,13 @@ import dateutil.relativedelta
 import rdflib.util
 
 import case_utils
+from case_utils.namespace import NS_RDF, NS_UCO_CORE, NS_UCO_OBSERVABLE, NS_XSD
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
-NS_RDF = rdflib.RDF
-NS_UCO_CORE = rdflib.Namespace("https://unifiedcyberontology.org/ontology/uco/core#")
-NS_UCO_OBSERVABLE = rdflib.Namespace("https://unifiedcyberontology.org/ontology/uco/observable#")
-NS_XSD = rdflib.namespace.XSD
 
 class ProcessUCOObject(object):
-    def __init__(self, graph, ns_base, **kwargs) -> None:
+    def __init__(self, graph: rdflib.Graph, ns_base: rdflib.Namespace, *args: typing.Any, prefix_slug:str = "process-", **kwargs: typing.Any) -> None:
         """
         Initializing a ProcessUCOObject will create one triple in the graph.  To add data to the new node, call populate_from_gnu_time_log().
         """
@@ -46,19 +43,18 @@ class ProcessUCOObject(object):
         assert isinstance(graph, rdflib.Graph)
 
         self.graph = graph
-
-        prefix_slug = kwargs.get("prefix_slug", "process-")
+        self._ns_base = ns_base
 
         # Guarantee at least one triple enters the graph.
-        self._node = rdflib.URIRef(ns_base[prefix_slug + case_utils.local_uuid.local_uuid()])
+        self._node = ns_base[prefix_slug + case_utils.local_uuid.local_uuid()]
         self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.Process))
 
-        self._bnode_process: typing.Optional[rdflib.BNode] = None
+        self._n_process_facet: typing.Optional[rdflib.URIRef] = None
         self._created_time: typing.Optional[str] = None
         self._exit_status: typing.Optional[int] = None
         self._exit_time: typing.Optional[str] = None
 
-    def populate_from_gnu_time_log(self, gnu_time_log) -> None:
+    def populate_from_gnu_time_log(self, gnu_time_log: str) -> None:
         """
         This method populates Process data from a GNU Time log file.  If self.exit_time is not set before this method is called, it will be set by reading the modification time of gnu_time_log.
         """
@@ -108,17 +104,6 @@ class ProcessUCOObject(object):
         self.created_time = created_time_datetime.isoformat()
 
     @property
-    def bnode_process(self) -> rdflib.BNode:
-        """
-        Created on first access.
-        """
-        if self._bnode_process is None:
-            self._bnode_process = rdflib.BNode()
-            self.graph.add((self._bnode_process, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet))
-            self.graph.add((self.node, NS_UCO_CORE.hasFacet, self._bnode_process))
-        return self._bnode_process
-
-    @property
     def created_time(self) -> typing.Optional[str]:
         return self._created_time
 
@@ -132,7 +117,7 @@ class ProcessUCOObject(object):
         str_value = str(value) # For e.g. datetime objects.
         # Confirm text is ISO-8601.
         check_value = dateutil.parser.isoparse(str_value)
-        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.observableCreatedTime, rdflib.Literal(str_value, datatype=NS_XSD.dateTime)))
+        self.graph.add((self.n_process_facet, NS_UCO_OBSERVABLE.observableCreatedTime, rdflib.Literal(str_value, datatype=NS_XSD.dateTime)))
         self._created_time = value
 
     @property
@@ -142,7 +127,7 @@ class ProcessUCOObject(object):
     @exit_status.setter
     def exit_status(self, value: int) -> None:
         assert isinstance(value, int)
-        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value)))
+        self.graph.add((self.n_process_facet, NS_UCO_OBSERVABLE.exitStatus, rdflib.Literal(value)))
 
     @property
     def exit_time(self) -> typing.Optional[str]:
@@ -159,8 +144,19 @@ class ProcessUCOObject(object):
         # Confirm text is ISO-8601.
         check_value = dateutil.parser.isoparse(str_value)
         literal_time = rdflib.Literal(str_value, datatype=NS_XSD.dateTime)
-        self.graph.add((self.bnode_process, NS_UCO_OBSERVABLE.exitTime, literal_time))
+        self.graph.add((self.n_process_facet, NS_UCO_OBSERVABLE.exitTime, literal_time))
         self._exit_time = value
+
+    @property
+    def n_process_facet(self) -> rdflib.URIRef:
+        """
+        Created on first access.
+        """
+        if self._n_process_facet is None:
+            self._n_process_facet = self.ns_base["process-facet-" + case_utils.local_uuid.local_uuid()]
+            self.graph.add((self._n_process_facet, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet))
+            self.graph.add((self.node, NS_UCO_CORE.hasFacet, self._n_process_facet))
+        return self._n_process_facet
 
     @property
     def node(self) -> rdflib.URIRef:
@@ -169,7 +165,21 @@ class ProcessUCOObject(object):
         """
         return self._node
 
-def build_process_object(graph, ns_base, gnu_time_log, mtime=None, prefix_slug=None) -> ProcessUCOObject:
+    @property
+    def ns_base(self) -> rdflib.Namespace:
+        """
+        No setter.
+        """
+        return self._ns_base
+
+
+def build_process_object(
+    graph: rdflib.Graph,
+    ns_base: rdflib.Namespace,
+    gnu_time_log: str,
+    mtime: typing.Optional[str] = None,
+    prefix_slug: typing.Optional[str] = None
+) -> ProcessUCOObject:
     """
     This function builds a Process UCO Object from a file that contains the output of GNU Time's --verbose flag.
 
@@ -212,6 +222,7 @@ def main() -> None:
     graph.namespace_manager.bind("kb", NS_BASE)
     graph.namespace_manager.bind("uco-core", NS_UCO_CORE)
     graph.namespace_manager.bind("uco-observable", NS_UCO_OBSERVABLE)
+    graph.namespace_manager.bind("xsd", NS_XSD)
 
     mtime_str = None
     if args.done_log:

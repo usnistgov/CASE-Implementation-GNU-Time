@@ -16,6 +16,8 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  schedule:
+    - cron: '15 5 * * TUE'
 
 jobs:
   build:

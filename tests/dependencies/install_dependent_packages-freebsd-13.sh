@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/bin/sh
 
 # This software was developed at the National Institute of Standards
 # and Technology by employees of the Federal Government in the course
@@ -11,21 +11,25 @@
 #
 # We would appreciate acknowledgement if the software is used.
 
-import os
+# This script provides the packages needed to run the unit tests in a "baseline" FreeBSD 12 environment.  (See the similarly named script in ${top_srcdir}/dependencies/ for meaning of "baseline".)
+# Note that this script will insist on the path to Bash being /bin/bash.
 
-import rdflib.plugins.sparql
+set -x
+set -e
 
-srcdir = os.path.dirname(__file__)
+sudo pkg install --yes \
+  bash \
+  gmake \
+  openjdk11-jre \
+  py39-sqlite3 \
+  wget
 
-def _parse_graph(filename) -> rdflib.Graph:
-    graph_filename = os.path.join(srcdir, filename)
-    graph = rdflib.Graph()
-    graph.parse(graph_filename)
-    return graph
-
-def test_from_pip_validation() -> None:
-    graph = _parse_graph("validation.ttl")
-    result = None
-    for triple in graph.triples((None, rdflib.SH.conforms, None)):
-        result = triple[2].toPython()
-    assert result
+if [ ! -x /bin/bash ]; then
+  cd /bin
+    test -x /usr/local/bin/bash
+    sudo ln -s \
+      /usr/local/bin/bash \
+      bash
+  cd -
+fi
+test -x /bin/bash

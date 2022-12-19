@@ -47,8 +47,8 @@ This project follows [SEMVER 2.0.0](https://semver.org/) where versions are decl
 
 This repository supports the CASE and UCO ontology versions that are distributed with the [CASE-Utilities-Python repository](https://github.com/casework/CASE-Utilities-Python), at its submodule-tracked state [here](dependencies/CASE-Utilities-Python).  Currently, those ontology versions are:
 
-* CASE 0.5.0
-* UCO 0.7.0
+* CASE 1.1.0
+* UCO 1.1.0
 
 
 ## Repository locations
@@ -65,8 +65,7 @@ Releases and issue tracking will be handled at the [casework location](https://g
 Some `make` targets are defined for this repository:
 * `all` - No effect.
 * `check` - Run unit tests.  *NOTE*: The tests entail downloading some software to assist with formatting and conversion, from PyPI and from a [third party](https://github.com/edmcouncil/rdf-toolkit).  `make download` retrieves these files.
-* `clean` - Remove test build files, but not downloaded files or the `tests/venv` virtual environment.
-* `distclean` - Run `make clean` and further delete downloaded files and the `tests/venv` virtual environment.  Neither `clean` nor `distclean` will remove downloaded submodules.
+* `clean` - Remove test build files, but not downloaded files or the `tests/venv` virtual environment.  Will not remove downloaded submodules.
 * `download` - Download files sufficiently to run the unit tests offline.  This will *not* include the ontology repositories tracked as submodules.  Note if you do need to work offline, be aware touching the `setup.py` file in the root, or `tests/requirements.txt`, will trigger a virtual environment rebuild.
 
 

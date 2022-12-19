@@ -40,7 +40,6 @@ all: \
 
 .venv.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
-  $(top_srcdir)/case_gnu_time/__init__.py \
   $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
   $(top_srcdir)/setup.py \
@@ -55,20 +54,15 @@ all: \
 	    setuptools \
 	    wheel
 	source venv/bin/activate \
-	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
-	    && pip install \
-	      .
-	source venv/bin/activate \
 	  && pip install \
 	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
 	source venv/bin/activate \
-	  && cd $(top_srcdir) \
-	    && pip install \
-	      --editable \
-	      .
+	  && pip install \
+	    --editable \
+	    $(top_srcdir)
 	source venv/bin/activate \
 	  && pip install \
-	    -r requirements.txt
+	    --requirement requirements.txt
 	touch $@
 
 .venv_minimal.done.log: \
@@ -87,15 +81,11 @@ all: \
 	    setuptools \
 	    wheel
 	source venv_minimal/bin/activate \
-	  && cd $(top_srcdir)/dependencies/CASE-Utilities-Python \
-	    && pip install \
-	      .
-	source venv_minimal/bin/activate \
 	  && pip install \
 	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
 	source venv_minimal/bin/activate \
 	  && pip install \
-	    -r requirements.txt
+	    --requirement requirements.txt
 	touch $@
 
 all-as_import: \
@@ -154,11 +144,9 @@ check-mypy: \
   .venv.done.log
 	source venv/bin/activate \
 	  && mypy \
+	    --strict \
 	    $(top_srcdir)/case_gnu_time \
-	    as_import \
-	    from_pip \
-	    gtime_and_done_log \
-	    gtime_log
+	    as_import
 
 clean:
 	@$(MAKE) \
@@ -175,9 +163,6 @@ clean:
 	  clean
 	@rm -rf \
 	  .pytest_cache
-
-distclean: \
-  clean
 	@rm -f \
 	  .venv.done.log \
 	  .venv_minimal.done.log

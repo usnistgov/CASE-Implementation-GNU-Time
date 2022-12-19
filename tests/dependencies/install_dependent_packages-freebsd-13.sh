@@ -21,7 +21,7 @@ sudo pkg install --yes \
   bash \
   gmake \
   openjdk11-jre \
-  py37-virtualenv \
+  py39-sqlite3 \
   wget
 
 if [ ! -x /bin/bash ]; then

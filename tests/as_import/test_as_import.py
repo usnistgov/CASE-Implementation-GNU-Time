@@ -16,6 +16,8 @@ import os
 
 import case_utils.ontology
 import rdflib.plugins.sparql
+from rdflib import URIRef
+from rdflib.query import ResultRow
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
@@ -63,8 +65,9 @@ WHERE
     results = graph.query(query)
     _logger.debug("len(results) = %d." % len(results))
     for result in results:
-        _logger.debug("result = %r." % result)
-        (n_process_object,) = result
+        assert isinstance(result, ResultRow)
+        assert isinstance(result[0], URIRef)
+        n_process_object = result[0]
         assert n_process_object is not None
         iris.add(n_process_object.toPython())
     assert len(iris) == 1

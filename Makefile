@@ -19,6 +19,8 @@ all: \
   .venv-pre-commit/var/.pre-commit-built.log
 
 .PHONY: \
+  check-supply-chain \
+  check-supply-chain-pre-commit \
   download
 
 .git_submodule_init.done.log: \
@@ -63,6 +65,18 @@ check: \
 	  PYTHON3=$(PYTHON3) \
 	  --directory tests \
 	  check
+
+# This target's dependencies potentially modify the working directory's Git state, so it is intentionally not a dependency of check.
+check-supply-chain: \
+  check-supply-chain-pre-commit
+
+check-supply-chain-pre-commit: \
+  .venv-pre-commit/var/.pre-commit-built.log
+	source .venv-pre-commit/bin/activate \
+	  && pre-commit autoupdate
+	git diff \
+	  --exit-code \
+	  .pre-commit-config.yaml
 
 clean:
 	@rm -rf \

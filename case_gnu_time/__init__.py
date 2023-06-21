@@ -15,7 +15,7 @@
 This library parses the output of GNU Time into a UCO Process graph node.
 """
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 import argparse
 import datetime
@@ -24,6 +24,7 @@ import os
 import typing
 
 import case_utils
+import case_utils.inherent_uuid
 import dateutil
 import dateutil.parser
 import dateutil.relativedelta
@@ -39,8 +40,9 @@ class ProcessUCOObject(object):
         graph: rdflib.Graph,
         ns_base: rdflib.Namespace,
         *args: typing.Any,
-        prefix_slug: str = "process-",
-        **kwargs: typing.Any
+        prefix_slug: str = "Process-",
+        use_deterministic_uuids: bool = False,
+        **kwargs: typing.Any,
     ) -> None:
         """
         Initializing a ProcessUCOObject will create one triple in the graph.  To add data to the new node, call populate_from_gnu_time_log().
@@ -50,6 +52,8 @@ class ProcessUCOObject(object):
 
         self.graph = graph
         self._ns_base = ns_base
+
+        self._use_deterministic_uuids = use_deterministic_uuids
 
         # Guarantee at least one triple enters the graph.
         self._node = ns_base[prefix_slug + case_utils.local_uuid.local_uuid()]
@@ -169,9 +173,16 @@ class ProcessUCOObject(object):
         Created on first access.
         """
         if self._n_process_facet is None:
-            self._n_process_facet = self.ns_base[
-                "process-facet-" + case_utils.local_uuid.local_uuid()
-            ]
+            if self.use_deterministic_uuids:
+                self._n_process_facet = case_utils.inherent_uuid.get_facet_uriref(
+                    self.node,
+                    NS_UCO_OBSERVABLE.ProcessFacet,
+                    namespace=self.ns_base,
+                )
+            else:
+                self._n_process_facet = self.ns_base[
+                    "ProcessFacet-" + case_utils.local_uuid.local_uuid()
+                ]
             self.graph.add(
                 (self._n_process_facet, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet)
             )
@@ -192,6 +203,13 @@ class ProcessUCOObject(object):
         """
         return self._ns_base
 
+    @property
+    def use_deterministic_uuids(self) -> bool:
+        """
+        No setter.
+        """
+        return self._use_deterministic_uuids
+
 
 def build_process_object(
     graph: rdflib.Graph,
@@ -199,6 +217,9 @@ def build_process_object(
     gnu_time_log: str,
     mtime: typing.Optional[str] = None,
     prefix_slug: typing.Optional[str] = None,
+    *args: typing.Any,
+    use_deterministic_uuids: bool = False,
+    **kwargs: typing.Any,
 ) -> ProcessUCOObject:
     """
     This function builds a Process UCO Object from a file that contains the output of GNU Time's --verbose flag.
@@ -209,11 +230,13 @@ def build_process_object(
     * The mtime argument, which should be an ISO-8601 string.
     * The modification time of the file (via st_time of os.stat).
 
-    The optional argument prefix_slug is a short prefix to add to the node's in-namespace identifier, ending with "-".  If absent, the ProcessUCOObject will supply a default of "process-".
+    The optional argument prefix_slug is a short prefix to add to the node's in-namespace identifier, ending with "-".  If absent, the ProcessUCOObject will supply a default of "Process-".
     """
     case_utils.local_uuid.configure()
 
-    process_object_kwargs = dict()
+    process_object_kwargs: typing.Dict[str, typing.Any] = {
+        "use_deterministic_uuids": use_deterministic_uuids,
+    }
     if prefix_slug is not None:
         process_object_kwargs["prefix_slug"] = prefix_slug
     process_object = ProcessUCOObject(graph, ns_base, **process_object_kwargs)
@@ -235,6 +258,11 @@ argument_parser.add_argument(
 )
 argument_parser.add_argument(
     "--output-format", help="Override extension-based format guesser."
+)
+argument_parser.add_argument(
+    "--use-deterministic-uuids",
+    action="store_true",
+    help="Use UUIDs computed using the case_utils.inherent_uuid module.",
 )
 argument_parser.add_argument(
     "gnu_time_log",
@@ -261,7 +289,13 @@ def main() -> None:
     if args.done_log:
         with open(args.done_log, "r") as mtime_fh:
             mtime_str = mtime_fh.read(64).strip()
-    _ = build_process_object(graph, NS_BASE, args.gnu_time_log, mtime_str)
+    _ = build_process_object(
+        graph,
+        NS_BASE,
+        args.gnu_time_log,
+        mtime_str,
+        use_deterministic_uuids=args.use_deterministic_uuids,
+    )
 
     # _logger.debug("args.output_format = %r." % args.output_format)
     output_format = args.output_format or rdflib.util.guess_format(args.out_graph)

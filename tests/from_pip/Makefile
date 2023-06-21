@@ -92,6 +92,7 @@ process.ttl: \
 	  && source $(tests_srcdir)/venv/bin/activate \
 	    && case_gnu_time \
 	      --done-log echo.txt.done.log \
+	      --use-deterministic-uuids \
 	      echo.txt.time.log \
 	      __$@
 	source $(tests_srcdir)/venv/bin/activate \

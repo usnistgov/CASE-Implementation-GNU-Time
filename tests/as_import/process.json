@@ -8,14 +8,7 @@
     },
     "@graph": [
         {
-            "@id": "kb:custom-9cefdae7-a7db-549c-93d1-ed345cd878bd",
-            "@type": "uco-observable:Process",
-            "uco-core:hasFacet": {
-                "@id": "kb:process-facet-1c0b9ed6-8fd7-5dde-a2b1-c67e307187d9"
-            }
-        },
-        {
-            "@id": "kb:process-facet-1c0b9ed6-8fd7-5dde-a2b1-c67e307187d9",
+            "@id": "kb:ProcessFacet-febe39f1-082e-5804-a98a-95552c482bd3",
             "@type": "uco-observable:ProcessFacet",
             "uco-observable:exitStatus": {
                 "@type": "xsd:integer",
@@ -28,6 +21,13 @@
             "uco-observable:observableCreatedTime": {
                 "@type": "xsd:dateTime",
                 "@value": "2020-10-14T14:07:39.267912-04:00"
+            }
+        },
+        {
+            "@id": "kb:custom-b8c7cbdd-8e0f-55e5-8132-5aa1f1f65841",
+            "@type": "uco-observable:Process",
+            "uco-core:hasFacet": {
+                "@id": "kb:ProcessFacet-febe39f1-082e-5804-a98a-95552c482bd3"
             }
         }
     ]

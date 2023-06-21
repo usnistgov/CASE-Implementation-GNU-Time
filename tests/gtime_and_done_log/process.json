@@ -8,14 +8,14 @@
     },
     "@graph": [
         {
-            "@id": "kb:process-88d9e508-db95-58f5-bc22-51a3bad84c0d",
+            "@id": "kb:Process-4219d007-bb66-5a42-9f87-23df6719ccd7",
             "@type": "uco-observable:Process",
             "uco-core:hasFacet": {
-                "@id": "kb:process-facet-d939dd64-2a76-5d0d-90a5-f471680ea40d"
+                "@id": "kb:ProcessFacet-cfbb7c77-7147-51e3-80ea-436f41321263"
             }
         },
         {
-            "@id": "kb:process-facet-d939dd64-2a76-5d0d-90a5-f471680ea40d",
+            "@id": "kb:ProcessFacet-cfbb7c77-7147-51e3-80ea-436f41321263",
             "@type": "uco-observable:ProcessFacet",
             "uco-observable:exitStatus": {
                 "@type": "xsd:integer",

@@ -6,15 +6,15 @@
 @prefix uco-observable: <https://ontology.unifiedcyberontology.org/uco/observable/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-kb:ProcessFacet-f6c5b699-e6ef-56bb-9e93-5d6934402ff1
+kb:ProcessFacet-febe39f1-082e-5804-a98a-95552c482bd3
 	a uco-observable:ProcessFacet ;
 	uco-observable:exitStatus "0"^^xsd:integer ;
 	uco-observable:exitTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
 	uco-observable:observableCreatedTime "2020-10-14T14:07:39.267912-04:00"^^xsd:dateTime ;
 	.
 
-kb:custom-d86882a1-d134-5d73-bb60-18648aa59086
+kb:custom-b8c7cbdd-8e0f-55e5-8132-5aa1f1f65841
 	a uco-observable:Process ;
-	uco-core:hasFacet kb:ProcessFacet-f6c5b699-e6ef-56bb-9e93-5d6934402ff1 ;
+	uco-core:hasFacet kb:ProcessFacet-febe39f1-082e-5804-a98a-95552c482bd3 ;
 	.
 

@@ -40,10 +40,8 @@ all: \
 
 .venv.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
-  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
-  $(top_srcdir)/setup.py \
-  requirements.txt
+  $(top_srcdir)/setup.py
 	rm -rf venv
 	$(PYTHON3) -m venv \
 	  venv
@@ -55,22 +53,14 @@ all: \
 	    wheel
 	source venv/bin/activate \
 	  && pip install \
-	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
-	source venv/bin/activate \
-	  && pip install \
 	    --editable \
-	    $(top_srcdir)
-	source venv/bin/activate \
-	  && pip install \
-	    --requirement requirements.txt
+	    $(top_srcdir)[testing]
 	touch $@
 
 .venv_minimal.done.log: \
   $(top_srcdir)/.git_submodule_init.done.log \
-  $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt \
   $(top_srcdir)/setup.cfg \
-  $(top_srcdir)/setup.py \
-  requirements.txt
+  $(top_srcdir)/setup.py
 	rm -rf venv_minimal
 	$(PYTHON3) -m venv \
 	  venv_minimal
@@ -82,10 +72,7 @@ all: \
 	    wheel
 	source venv_minimal/bin/activate \
 	  && pip install \
-	    --requirement $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/requirements.txt
-	source venv_minimal/bin/activate \
-	  && pip install \
-	    --requirement requirements.txt
+	    $(top_srcdir)/dependencies/CASE-Utilities-Python[testing]
 	touch $@
 
 all-as_import: \

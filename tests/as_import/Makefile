@@ -96,6 +96,7 @@ process.ttl: \
 	  && source $(tests_srcdir)/venv/bin/activate \
 	    && python consumer.py \
 	      --done-log echo.txt.done.log \
+	      --use-deterministic-uuids \
 	      echo.txt.time.log \
 	      __$@
 	source $(tests_srcdir)/venv/bin/activate \

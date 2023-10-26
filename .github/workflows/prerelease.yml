@@ -18,8 +18,9 @@
 name: Prerelease
 
 on:
-  schedule:
-    - cron: '15 5 * * 1,2,3,4,5'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:

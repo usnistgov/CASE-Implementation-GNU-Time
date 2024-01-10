@@ -13,7 +13,9 @@
 
 SHELL := /bin/bash
 
-top_srcdir := $(shell cd ../.. ; pwd)
+top_srcdir_relative := ../..
+
+top_srcdir := $(shell cd $(top_srcdir_relative) ; pwd)
 
 tests_srcdir := $(top_srcdir)/tests
 
@@ -72,7 +74,7 @@ process.json: \
 	  --target __$@ \
 	  --target-format json-ld
 	source $(tests_srcdir)/venv_minimal/bin/activate \
-	  && python3 $(top_srcdir)/dependencies/CASE-Utilities-Python/tests/src/compact.py \
+	  && python3 $(top_srcdir_relative)/dependencies/CASE-Utilities-Python/tests/src/compact.py \
 	    _$@ \
 	    __$@
 	source $(tests_srcdir)/venv_minimal/bin/activate \
@@ -88,9 +90,9 @@ process.ttl: \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@
-	export CASE_DEMO_NONRANDOM_UUID_BASE=$(top_srcdir) \
+	export CDO_DEMO_NONRANDOM_UUID_BASE=$(top_srcdir) \
 	  && source $(tests_srcdir)/venv_minimal/bin/activate \
-	    && python $(top_srcdir)/case_gnu_time/__init__.py \
+	    && python $(top_srcdir_relative)/case_gnu_time/__init__.py \
 	      --use-deterministic-uuids \
 	      --done-log echo.txt.done.log \
 	      echo.txt.time.log \

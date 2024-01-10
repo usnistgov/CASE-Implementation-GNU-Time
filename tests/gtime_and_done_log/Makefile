@@ -88,7 +88,7 @@ process.ttl: \
   echo.txt.done.log \
   echo.txt.time.log
 	rm -f _$@ __$@
-	export CASE_DEMO_NONRANDOM_UUID_BASE=$(top_srcdir) \
+	export CDO_DEMO_NONRANDOM_UUID_BASE=$(top_srcdir) \
 	  && source $(tests_srcdir)/venv_minimal/bin/activate \
 	    && python $(top_srcdir)/case_gnu_time/__init__.py \
 	      --use-deterministic-uuids \

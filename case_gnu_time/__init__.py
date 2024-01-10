@@ -23,13 +23,14 @@ import logging
 import os
 import typing
 
-import case_utils
 import case_utils.inherent_uuid
+import cdo_local_uuid
 import dateutil
 import dateutil.parser
 import dateutil.relativedelta
 import rdflib.util
 from case_utils.namespace import NS_RDF, NS_UCO_CORE, NS_UCO_OBSERVABLE, NS_XSD
+from cdo_local_uuid import local_uuid
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
@@ -56,7 +57,7 @@ class ProcessUCOObject(object):
         self._use_deterministic_uuids = use_deterministic_uuids
 
         # Guarantee at least one triple enters the graph.
-        self._node = ns_base[prefix_slug + case_utils.local_uuid.local_uuid()]
+        self._node = ns_base[prefix_slug + local_uuid()]
         self.graph.add((self.node, NS_RDF.type, NS_UCO_OBSERVABLE.Process))
 
         self._n_process_facet: typing.Optional[rdflib.URIRef] = None
@@ -180,9 +181,7 @@ class ProcessUCOObject(object):
                     namespace=self.ns_base,
                 )
             else:
-                self._n_process_facet = self.ns_base[
-                    "ProcessFacet-" + case_utils.local_uuid.local_uuid()
-                ]
+                self._n_process_facet = self.ns_base["ProcessFacet-" + local_uuid()]
             self.graph.add(
                 (self._n_process_facet, NS_RDF.type, NS_UCO_OBSERVABLE.ProcessFacet)
             )
@@ -232,7 +231,7 @@ def build_process_object(
 
     The optional argument prefix_slug is a short prefix to add to the node's in-namespace identifier, ending with "-".  If absent, the ProcessUCOObject will supply a default of "Process-".
     """
-    case_utils.local_uuid.configure()
+    cdo_local_uuid.configure()
 
     process_object_kwargs: typing.Dict[str, typing.Any] = {
         "use_deterministic_uuids": use_deterministic_uuids,

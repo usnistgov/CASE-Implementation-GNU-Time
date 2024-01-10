@@ -8,7 +8,7 @@
     },
     "@graph": [
         {
-            "@id": "kb:ProcessFacet-febe39f1-082e-5804-a98a-95552c482bd3",
+            "@id": "kb:ProcessFacet-1c061412-e2ca-5f0c-a728-df4c82d6a36c",
             "@type": "uco-observable:ProcessFacet",
             "uco-observable:exitStatus": {
                 "@type": "xsd:integer",
@@ -24,10 +24,10 @@
             }
         },
         {
-            "@id": "kb:custom-b8c7cbdd-8e0f-55e5-8132-5aa1f1f65841",
+            "@id": "kb:custom-3d60c688-14ed-5563-ba9b-5935a0e752ae",
             "@type": "uco-observable:Process",
             "uco-core:hasFacet": {
-                "@id": "kb:ProcessFacet-febe39f1-082e-5804-a98a-95552c482bd3"
+                "@id": "kb:ProcessFacet-1c061412-e2ca-5f0c-a728-df4c82d6a36c"
             }
         }
     ]

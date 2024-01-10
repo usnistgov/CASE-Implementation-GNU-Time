@@ -13,7 +13,9 @@
 
 SHELL := /bin/bash
 
-top_srcdir := $(shell cd ../.. ; pwd)
+top_srcdir_relative := ../..
+
+top_srcdir := $(shell cd $(top_srcdir_relative) ; pwd)
 
 tests_srcdir := $(top_srcdir)/tests
 
@@ -78,7 +80,7 @@ process.ttl: \
 	rm -f _$@ __$@
 	export CDO_DEMO_NONRANDOM_UUID_BASE=$(top_srcdir) \
 	  && source $(tests_srcdir)/venv_minimal/bin/activate \
-	    && python $(top_srcdir)/case_gnu_time/__init__.py \
+	    && python $(top_srcdir_relative)/case_gnu_time/__init__.py \
 	      --use-deterministic-uuids \
 	      echo.txt.time.log \
 	      __$@

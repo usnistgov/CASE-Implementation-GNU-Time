@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
+# Portions of this file contributed by NIST are governed by the
+# following statement:
+#
 # This software was developed at the National Institute of Standards
 # and Technology by employees of the Federal Government in the course
-# of their official duties. Pursuant to title 17 Section 105 of the
-# United States Code this software is not subject to copyright
-# protection and is in the public domain. NIST assumes no
-# responsibility whatsoever for its use by other parties, and makes
-# no guarantees, expressed or implied, about its quality,
-# reliability, or any other characteristic.
+# of their official duties. Pursuant to Title 17 Section 105 of the
+# United States Code, this software is not subject to copyright
+# protection within the United States. NIST assumes no responsibility
+# whatsoever for its use by other parties, and makes no guarantees,
+# expressed or implied, about its quality, reliability, or any other
+# characteristic.
 #
 # We would appreciate acknowledgement if the software is used.
 
@@ -15,12 +18,13 @@
 This library parses the output of GNU Time into a UCO Process graph node.
 """
 
-__version__ = "0.13.0"
+__version__ = "0.14.0"
 
 import argparse
 import datetime
 import logging
 import os
+import re
 import typing
 
 import case_utils.inherent_uuid
@@ -33,6 +37,76 @@ from case_utils.namespace import NS_RDF, NS_UCO_CORE, NS_UCO_OBSERVABLE, NS_XSD
 from cdo_local_uuid import local_uuid
 
 _logger = logging.getLogger(os.path.basename(__file__))
+
+
+def elapsed_time_line_to_relativedelta(
+    elapsed_str: str,
+) -> dateutil.relativedelta.relativedelta:
+    """
+    >>> elapsed_time_line_to_relativedelta("0:00.0000001")
+    relativedelta(microseconds=+1)
+    >>> elapsed_time_line_to_relativedelta("0:00.00003")
+    relativedelta(microseconds=+300)
+    >>> elapsed_time_line_to_relativedelta("0:00.05")
+    relativedelta(microseconds=+500000)
+    >>> elapsed_time_line_to_relativedelta("0:02.0000001")
+    relativedelta(seconds=+2, microseconds=+1)
+    >>> elapsed_time_line_to_relativedelta("3:02.0000001")
+    relativedelta(minutes=+3, seconds=+2, microseconds=+1)
+    >>> elapsed_time_line_to_relativedelta("43:02.0000001")
+    relativedelta(minutes=+43, seconds=+2, microseconds=+1)
+    >>> elapsed_time_line_to_relativedelta("43:02")
+    relativedelta(minutes=+43, seconds=+2)
+    >>> elapsed_time_line_to_relativedelta("9999:43:02")
+    relativedelta(days=+416, hours=+15, minutes=+43, seconds=+2)
+    """
+    match = re.match(
+        r"(?P<minutes>\d\d?):(?P<seconds>\d\d)(.(?P<subseconds>\d{1,7}))?",
+        elapsed_str,
+    )
+    if match is not None:
+        elapsed_minutes = int(match.group("minutes"))
+        elapsed_seconds = int(match.group("seconds"))
+        maybe_elapsed_microseconds_str: typing.Optional[str] = match.group("subseconds")
+
+        # logging.debug("elapsed_minutes = %r.", elapsed_minutes)
+        # logging.debug("elapsed_seconds = %r.", elapsed_seconds)
+        # logging.debug(
+        #     "maybe_elapsed_microseconds_str = %r.", maybe_elapsed_microseconds_str
+        # )
+
+        if maybe_elapsed_microseconds_str is None:
+            return dateutil.relativedelta.relativedelta(
+                minutes=elapsed_minutes,
+                seconds=elapsed_seconds,
+            )
+        else:
+            elapsed_microseconds_str = (maybe_elapsed_microseconds_str + "000000")[:7]
+            elapsed_microseconds = int(elapsed_microseconds_str)
+
+            return dateutil.relativedelta.relativedelta(
+                minutes=elapsed_minutes,
+                seconds=elapsed_seconds,
+                microseconds=elapsed_microseconds,
+            )
+    else:
+        match = re.match(
+            r"(?P<hours>\d{1,5}):(?P<minutes>\d\d):(?P<seconds>\d\d)", elapsed_str
+        )
+        if match is not None:
+            maybe_hours_str = match.group("hours")
+            if maybe_hours_str is None:
+                elapsed_hours = 0
+            else:
+                elapsed_hours = int(maybe_hours_str)
+            elapsed_minutes = int(match.group("minutes"))
+            elapsed_seconds = int(match.group("seconds"))
+            return dateutil.relativedelta.relativedelta(
+                hours=elapsed_hours,
+                minutes=elapsed_minutes,
+                seconds=elapsed_seconds,
+            )
+    raise ValueError("Unable to parse elapsed-time string: %s." % elapsed_str)
 
 
 class ProcessUCOObject(object):
@@ -95,19 +169,7 @@ class ProcessUCOObject(object):
         self.exit_status = int(kvdict["Exit status"])
 
         elapsed_str = kvdict["Elapsed (wall clock) time (h:mm:ss or m:ss)"]
-        elapsed_str_parts = elapsed_str.split(":")
-        elapsed_seconds_str = elapsed_str_parts[-1]
-        elapsed_seconds = int(elapsed_seconds_str.split(".")[0])
-        elapsed_microseconds = int(elapsed_seconds_str.split(".")[1]) * 10000
-        elapsed_minutes = int(elapsed_str_parts[-2])
-        if len(elapsed_str_parts) == 3:
-            elapsed_minutes += 60 * int(elapsed_str_parts[-3])
-
-        delta = dateutil.relativedelta.relativedelta(
-            minutes=elapsed_minutes,
-            seconds=elapsed_seconds,
-            microseconds=elapsed_microseconds,
-        )
+        delta = elapsed_time_line_to_relativedelta(elapsed_str)
 
         # logging.debug("delta = %r." % delta)
         created_time_datetime = exit_time_datetime - delta

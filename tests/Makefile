@@ -1,13 +1,16 @@
 #!/usr/bin/make -f
 
+# Portions of this file contributed by NIST are governed by the
+# following statement:
+#
 # This software was developed at the National Institute of Standards
 # and Technology by employees of the Federal Government in the course
-# of their official duties. Pursuant to title 17 Section 105 of the
-# United States Code this software is not subject to copyright
-# protection and is in the public domain. NIST assumes no
-# responsibility whatsoever for its use by other parties, and makes
-# no guarantees, expressed or implied, about its quality,
-# reliability, or any other characteristic.
+# of their official duties. Pursuant to Title 17 Section 105 of the
+# United States Code, this software is not subject to copyright
+# protection within the United States. NIST assumes no responsibility
+# whatsoever for its use by other parties, and makes no guarantees,
+# expressed or implied, about its quality, reliability, or any other
+# characteristic.
 #
 # We would appreciate acknowledgement if the software is used.
 
@@ -32,6 +35,7 @@ all: \
   all-gtime_log \
   all-gtime_and_done_log \
   check-as_import \
+  check-doctest \
   check-from_pip \
   check-gtime_log \
   check-gtime_and_done_log \
@@ -97,6 +101,7 @@ all-gtime_and_done_log: \
 
 # Dependencies are listed here in desired execution-progression order.
 check: \
+  check-doctest \
   check-gtime_log \
   check-gtime_and_done_log \
   check-from_pip \
@@ -108,6 +113,14 @@ check-as_import: \
 	$(MAKE) \
 	  --directory as_import \
 	  check
+
+check-doctest: \
+  .venv.done.log
+	source venv/bin/activate \
+	  && pytest \
+	    --doctest-modules \
+	    --log-level=DEBUG \
+	    $(top_srcdir)/case_gnu_time
 
 check-from_pip: \
   all-from_pip

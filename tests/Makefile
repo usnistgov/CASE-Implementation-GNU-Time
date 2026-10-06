@@ -32,6 +32,7 @@ all: \
   all-gtime_log \
   all-gtime_and_done_log \
   check-as_import \
+  check-doctest \
   check-from_pip \
   check-gtime_log \
   check-gtime_and_done_log \
@@ -97,6 +98,7 @@ all-gtime_and_done_log: \
 
 # Dependencies are listed here in desired execution-progression order.
 check: \
+  check-doctest \
   check-gtime_log \
   check-gtime_and_done_log \
   check-from_pip \
@@ -108,6 +110,14 @@ check-as_import: \
 	$(MAKE) \
 	  --directory as_import \
 	  check
+
+check-doctest: \
+  .venv.done.log
+	source venv/bin/activate \
+	  && pytest \
+	    --doctest-modules \
+	    --log-level=DEBUG \
+	    $(top_srcdir)/case_gnu_time
 
 check-from_pip: \
   all-from_pip

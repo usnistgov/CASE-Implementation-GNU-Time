@@ -1,6 +1,6 @@
 # CASE Implementation: GNU Time
 
-![CASE Version](https://img.shields.io/badge/CASE%20Version-1.4.0-green)
+![CASE Version](https://img.shields.io/badge/CASE%20Version-1.5.0-green)
 
 This implementation maps the logged output of [GNU Time](https://www.gnu.org/software/time/) into the [UCO](https://github.com/ucoProject/UCO/) version used by [CASE](https://caseontology.org/).
 
